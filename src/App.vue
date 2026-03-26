@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 
-const counter = ref(69)
+const counter = ref(420)
 
 function addOne()
 {
