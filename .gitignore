@@ -138,3 +138,7 @@ dist
 # IDE
 .idea
 .vscode
+
+# PYTHON BACKEND
+__pycache__
+.venv
