@@ -11,20 +11,20 @@ function addOne() {
   counter.value++
 }
 
-// async function getText() {
-//   try {
-//     const response = await fetch(`${backendUrl}/`)
-//     const data = await response.text()
-//     text.value = data
-//   } catch (error) {
-//     text.value = 'Error while fetching data'
-//   }
-// }
-
-async function getText()
-{
-    text.value = backendUrl
+async function getText() {
+  try {
+    const response = await fetch(`${backendUrl}/`)
+    const data = await response.text()
+    text.value = data
+  } catch (error) {
+    text.value = 'Error while fetching data'
+  }
 }
+
+// async function getText()
+// {
+//     text.value = backendUrl
+// }
 
 function clearText() {
   text.value = ''
