@@ -10,7 +10,7 @@ function minusOne() {
 
 <template>
   <div>
-    <h1>Counter: {{ counter }}</h1>
+    <h1>MinusCounter: {{ counter }}</h1>
     <button @click="minusOne">-1</button>
 
     <br><br>

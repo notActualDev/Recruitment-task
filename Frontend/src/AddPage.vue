@@ -10,7 +10,7 @@ function addOne() {
 
 <template>
   <div>
-    <h1>Counter: {{ counter }}</h1>
+    <h1>AddCounter: {{ counter }}</h1>
     <button @click="addOne">+1</button>
 
     <br><br>
