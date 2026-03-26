@@ -1,14 +1,17 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 app = FastAPI()
 
+frontend_url = os.getenv("FRONTEND_URL", "*")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # pozwól na wszystkie domeny
+    allow_origins=[frontend_url],
     allow_credentials=True,
-    allow_methods=["*"],   # wszystkie metody (GET, POST itd.)
-    allow_headers=["*"],   # wszystkie nagłówki
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 @app.get("/")
