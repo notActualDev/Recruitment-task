@@ -1,4 +1,6 @@
-from fastapi import FastAPI
+import secrets
+
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from pydantic import BaseModel
@@ -6,6 +8,9 @@ import bcrypt
 
 
 app = FastAPI()
+
+# tokeny w RAM
+admin_tokens = {}
 
 frontend_url = os.getenv("FRONTEND_URL", "*")
 
@@ -25,22 +30,23 @@ def root():
 @app.post("/admin/login")
 def admin_login(password: str):
 
-    stored_hash = os.getenv("ADMIN_PASSWORD_HASH")
+    stored_hash = os.getenv("ADMIN_PASSWORD_HASH", "").strip()
 
     if not stored_hash:
-        return {"error": "ADMIN_PASSWORD_HASH not set"}
+        raise HTTPException(status_code=500, detail="Admin hash not configured")
 
-    password_bytes = password.encode("utf-8")
+    password_bytes = password.encode()
+    stored_hash_bytes = stored_hash.encode()
 
-    # debug: generujemy hash z przesłanego hasła
-    generated_hash = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
+    if not bcrypt.checkpw(password_bytes, stored_hash_bytes):
+        raise HTTPException(status_code=401, detail="Invalid password")
 
-    # sprawdzenie
-    is_valid = bcrypt.checkpw(password_bytes, stored_hash.encode())
+    # generujemy token
+    token = secrets.token_hex(32)
+
+    # zapis w RAM
+    admin_tokens[token] = True
 
     return {
-        "received_password": password,
-        "generated_hash": generated_hash.decode(),
-        "stored_hash": stored_hash,
-        "success": is_valid
+        "token": token
     }

@@ -1,9 +1,10 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const password = ref("")
 const message = ref("")
-const debugInfo = ref("")
+const router = useRouter()
 
 async function login() {
 
@@ -13,18 +14,26 @@ async function login() {
 
     const response = await fetch(
         `${backendUrl}/admin/login?password=${encodeURIComponent(password.value)}`,
-        {
-          method: "POST"
-        }
+        { method: "POST" }
     )
+
+    if (!response.ok) {
+      message.value = "Logowanie się nie powiodło"
+      return
+    }
 
     const data = await response.json()
 
-    // pokazujemy odpowiedź backendu
-    debugInfo.value = JSON.stringify(data, null, 2)
+    const token = data.token
 
-    if (data.success) {
-      message.value = "Logowanie powiodło się"
+    if (token) {
+
+      // zapis tokena
+      localStorage.setItem("adminToken", token)
+
+      // przejście na panel admina
+      router.push("/adminMainScreen")
+
     } else {
       message.value = "Logowanie się nie powiodło"
     }
@@ -53,9 +62,6 @@ async function login() {
     </button>
 
     <p>{{ message }}</p>
-
-    <h3>Debug backend response:</h3>
-    <pre>{{ debugInfo }}</pre>
 
   </div>
 </template>
