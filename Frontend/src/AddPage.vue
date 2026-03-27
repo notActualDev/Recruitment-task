@@ -42,6 +42,10 @@ function clearText() {
       Go to minus page
     </router-link>
 
+    <router-link to="/adminLoginScreen">
+      Go to ADMIN LOGIN SCREEN page
+    </router-link>
+
     <br><br>
 
     <!-- pole wyświetlania tekstu -->
