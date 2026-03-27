@@ -1,4 +1,6 @@
+import datetime
 import secrets
+from datetime import timedelta
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -26,6 +28,8 @@ app.add_middleware(
 def root():
     return {"message": "Hello World"}
 
+TOKEN_LIFETIME = timedelta(minutes=15)
+
 
 @app.post("/admin/login")
 def admin_login(password: str):
@@ -35,18 +39,40 @@ def admin_login(password: str):
     if not stored_hash:
         raise HTTPException(status_code=500, detail="Admin hash not configured")
 
-    password_bytes = password.encode()
-    stored_hash_bytes = stored_hash.encode()
-
-    if not bcrypt.checkpw(password_bytes, stored_hash_bytes):
+    if not bcrypt.checkpw(password.encode(), stored_hash.encode()):
         raise HTTPException(status_code=401, detail="Invalid password")
 
-    # generujemy token
-    token = secrets.token_hex(32)
+    now = datetime.utcnow()
 
-    # zapis w RAM
-    admin_tokens[token] = True
+    # 1️⃣ usuwanie wygasłych tokenów
+    expired_tokens = [
+        token for token, expiration in admin_tokens.items()
+        if expiration < now
+    ]
+
+    for token in expired_tokens:
+        del admin_tokens[token]
+
+    # 2️⃣ jeśli jest ważny token → użyj go
+    for token, expiration in admin_tokens.items():
+        if expiration >= now:
+
+            # przedłużamy jego ważność
+            new_expiration = now + TOKEN_LIFETIME
+            admin_tokens[token] = new_expiration
+
+            return {
+                "token": token,
+                "expiration": new_expiration.isoformat()
+            }
+
+    # 3️⃣ jeśli nie ma żadnego → tworzymy nowy
+    token = secrets.token_hex(32)
+    expiration = now + TOKEN_LIFETIME
+
+    admin_tokens[token] = expiration
 
     return {
-        "token": token
+        "token": token,
+        "expiration": expiration.isoformat()
     }
