@@ -21,28 +21,26 @@ app.add_middleware(
 def root():
     return {"message": "Hello World"}
 
-class AdminLoginRequest(BaseModel):
-    password: str
 
+@app.post("/admin/login")
+def admin_login(password: str):
 
-class AdminLoginResponse(BaseModel):
-    success: bool
-
-
-@app.post("/admin/login", response_model=AdminLoginResponse)
-def admin_login(request: AdminLoginRequest):
-
-    # hash zapisany w Railway Environment Variables
     stored_hash = os.getenv("ADMIN_PASSWORD_HASH")
 
-    if stored_hash is None:
-        return {"success": False}
+    if not stored_hash:
+        return {"error": "ADMIN_PASSWORD_HASH not set"}
 
-    # bcrypt działa na bytes
-    password_bytes = request.password.encode("utf-8")
-    stored_hash_bytes = stored_hash.encode("utf-8")
+    password_bytes = password.encode("utf-8")
 
-    # porównanie bcrypt
-    is_valid = bcrypt.checkpw(password_bytes, stored_hash_bytes)
+    # debug: generujemy hash z przesłanego hasła
+    generated_hash = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
 
-    return {"success": is_valid}
+    # sprawdzenie
+    is_valid = bcrypt.checkpw(password_bytes, stored_hash.encode())
+
+    return {
+        "received_password": password,
+        "generated_hash": generated_hash.decode(),
+        "stored_hash": stored_hash,
+        "success": is_valid
+    }

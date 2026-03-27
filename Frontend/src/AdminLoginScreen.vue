@@ -3,6 +3,7 @@ import { ref } from 'vue'
 
 const password = ref("")
 const message = ref("")
+const debugInfo = ref("")
 
 async function login() {
 
@@ -18,6 +19,9 @@ async function login() {
     )
 
     const data = await response.json()
+
+    // pokazujemy odpowiedź backendu
+    debugInfo.value = JSON.stringify(data, null, 2)
 
     if (data.success) {
       message.value = "Logowanie powiodło się"
@@ -49,6 +53,9 @@ async function login() {
     </button>
 
     <p>{{ message }}</p>
+
+    <h3>Debug backend response:</h3>
+    <pre>{{ debugInfo }}</pre>
 
   </div>
 </template>
