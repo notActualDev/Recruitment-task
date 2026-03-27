@@ -31,11 +31,9 @@ async function login() {
       // zapis tokena
       localStorage.setItem("adminToken", token)
 
-      // przejście na panel admina
+      // przejście na stronę admina
       router.push("/adminMainScreen")
 
-    } else {
-      message.value = "Logowanie się nie powiodło"
     }
 
   } catch (error) {
