@@ -114,8 +114,7 @@ function deselectAllAttention() {
     </div>
 
 
-
-    <!-- CORRECT SECTION -->
+    <!-- CORRECT -->
 
     <div v-if="correctRecords.length" class="section">
 
@@ -180,7 +179,7 @@ function deselectAllAttention() {
 
 
 
-    <!-- ATTENTION SECTION -->
+    <!-- ATTENTION -->
 
     <div v-if="attentionRecords.length" class="section">
 
@@ -250,12 +249,19 @@ function deselectAllAttention() {
 <style scoped>
 
 .container{
-  max-width:1600px;
-  margin:auto;
+
+  width:100vw;
+  min-height:100vh;
+
   padding:30px;
+
   background:#0b0b0b;
   color:white;
+
   font-family:Arial;
+
+  box-sizing:border-box;
+
 }
 
 .section{
@@ -328,15 +334,17 @@ function deselectAllAttention() {
 }
 
 .record-fields{
+
   display:grid;
 
-  /* WYPEŁNIA CAŁĄ SZEROKOŚĆ */
+  /* TERAZ NAPRAWDĘ WYPEŁNIA CAŁĄ SZEROKOŚĆ */
 
-  grid-template-columns: repeat(auto-fit,minmax(320px,1fr));
+  grid-template-columns: repeat(auto-fit,minmax(420px,1fr));
 
   gap:10px;
 
   width:100%;
+
 }
 
 .field{
