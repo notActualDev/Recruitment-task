@@ -17,7 +17,7 @@ def RepairJson(
     service: LlmJsonRepairService = Depends(GetLlmJsonRepairService),
     _: None = Depends(RequireAdminToken)
 ):
-
-    result = service.repair_json(request.corruptedJson)
-
-    return result
+    return {"ok": True}
+    # result = service.repair_json(request.corruptedJson)
+    #
+    # return result
