@@ -1,8 +1,8 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const jsonInput = ref("")
-const result = ref(null)
+const records = ref([])
 const loading = ref(false)
 const error = ref(null)
 
@@ -11,7 +11,7 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL
 async function fixJson() {
 
   error.value = null
-  result.value = null
+  records.value = []
 
   const token = localStorage.getItem("adminToken")
 
@@ -41,7 +41,11 @@ async function fixJson() {
 
     const data = await response.json()
 
-    result.value = data
+    // zapisujemy rekordy
+    records.value = data.map(r => ({
+      ...r,
+      selected: false
+    }))
 
   } catch (e) {
 
@@ -53,6 +57,15 @@ async function fixJson() {
 
   }
 }
+
+const correctRecords = computed(() =>
+    records.value.filter(r => !r.needsAttention)
+)
+
+const attentionRecords = computed(() =>
+    records.value.filter(r => r.needsAttention)
+)
+
 </script>
 
 <template>
@@ -82,13 +95,72 @@ async function fixJson() {
       {{ error }}
     </div>
 
-    <div v-if="result" class="result-container">
 
-      <h2>LLM Result</h2>
+    <!-- CORRECT RECORDS -->
 
-      <pre class="result">
-{{ JSON.stringify(result, null, 2) }}
-    </pre>
+    <div v-if="correctRecords.length">
+
+      <h2>Correct records</h2>
+
+      <div
+          v-for="record in correctRecords"
+          :key="record.id"
+          class="record-bar"
+      >
+
+        <input
+            type="checkbox"
+            v-model="record.selected"
+        />
+
+        <div class="record-fields">
+
+          <div><b>ID:</b> {{ record.id }}</div>
+          <div><b>Name:</b> {{ record.name }}</div>
+          <div><b>Brand:</b> {{ record.brand }}</div>
+          <div><b>Purchase:</b> {{ record.purchaseDate }}</div>
+          <div><b>Status:</b> {{ record.status }}</div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- ATTENTION RECORDS -->
+
+    <div v-if="attentionRecords.length">
+
+      <h2>Records that need attention</h2>
+
+      <div
+          v-for="record in attentionRecords"
+          :key="record.id"
+          class="record-bar attention"
+      >
+
+        <input
+            type="checkbox"
+            v-model="record.selected"
+        />
+
+        <div class="record-fields">
+
+          <div><b>ID:</b> {{ record.id }}</div>
+          <div><b>Name:</b> {{ record.name }}</div>
+          <div><b>Brand:</b> {{ record.brand }}</div>
+          <div><b>Purchase:</b> {{ record.purchaseDate }}</div>
+          <div><b>Status:</b> {{ record.status }}</div>
+
+          <div class="attention-note">
+            ⚠ {{ record.attentionNotes }}
+          </div>
+
+        </div>
+
+      </div>
 
     </div>
 
@@ -99,7 +171,7 @@ async function fixJson() {
 <style scoped>
 
 .container {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: auto;
   padding: 30px;
   font-family: Arial;
@@ -107,41 +179,65 @@ async function fixJson() {
 
 .json-input {
   width: 100%;
-  height: 250px;
+  height: 220px;
   font-family: monospace;
-  font-size: 14px;
   padding: 10px;
-  resize: vertical;
-  overflow-y: scroll;
 }
 
 .fix-button {
   margin-top: 15px;
   padding: 10px 20px;
   font-size: 16px;
-  cursor: pointer;
 }
 
 .loading {
   margin-top: 20px;
-  color: #444;
 }
 
 .error {
-  margin-top: 20px;
   color: red;
+  margin-top: 20px;
 }
 
-.result-container {
-  margin-top: 30px;
+.record-bar {
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 15px;
+
+  background: #f4f4f4;
+
+  padding: 15px;
+
+  margin-top: 10px;
+
+  border-radius: 6px;
 }
 
-.result {
-  background: #111;
-  color: #00ff88;
-  padding: 20px;
-  overflow-x: auto;
-  white-space: pre-wrap;
+.record-bar.attention {
+
+  background: #ffe6e6;
+}
+
+.record-fields {
+
+  display: grid;
+
+  grid-template-columns: repeat(5, auto);
+
+  gap: 20px;
+
+  font-size: 14px;
+}
+
+.attention-note {
+
+  grid-column: span 5;
+
+  color: red;
+
+  font-weight: bold;
 }
 
 </style>
