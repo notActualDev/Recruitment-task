@@ -65,7 +65,6 @@ const attentionRecords = computed(() =>
     records.value.filter(r => r.needsAttention)
 )
 
-
 function selectAllCorrect() {
   correctRecords.value.forEach(r => r.selected = true)
 }
@@ -129,18 +128,31 @@ function deselectAllAttention() {
           class="record-bar correct"
       >
 
-        <input
-            type="checkbox"
-            v-model="record.selected"
-        />
+        <input type="checkbox" v-model="record.selected" />
 
         <div class="record-fields">
 
           <div><b>ID:</b> {{ record.id }}</div>
           <div><b>Name:</b> {{ record.name }}</div>
+
           <div><b>Brand:</b> {{ record.brand }}</div>
-          <div><b>Purchase:</b> {{ record.purchaseDate }}</div>
+          <div><b>fixedBrand:</b> {{ record.fixedBrand }}</div>
+
+          <div><b>purchaseDate:</b> {{ record.purchaseDate }}</div>
+          <div><b>fixedPurchaseDate:</b> {{ record.fixedPurchaseDate }}</div>
+
           <div><b>Status:</b> {{ record.status }}</div>
+          <div><b>fixedStatus:</b> {{ record.fixedStatus }}</div>
+
+          <div><b>assignedTo:</b> {{ record.assignedTo }}</div>
+
+          <div><b>notes:</b> {{ record.notes }}</div>
+
+          <div><b>history:</b> {{ record.history }}</div>
+
+          <div><b>needsAttention:</b> {{ record.needsAttention }}</div>
+
+          <div><b>attentionNotes:</b> {{ record.attentionNotes }}</div>
 
         </div>
 
@@ -167,22 +179,31 @@ function deselectAllAttention() {
           class="record-bar attention"
       >
 
-        <input
-            type="checkbox"
-            v-model="record.selected"
-        />
+        <input type="checkbox" v-model="record.selected" />
 
         <div class="record-fields">
 
           <div><b>ID:</b> {{ record.id }}</div>
           <div><b>Name:</b> {{ record.name }}</div>
-          <div><b>Brand:</b> {{ record.brand }}</div>
-          <div><b>Purchase:</b> {{ record.purchaseDate }}</div>
-          <div><b>Status:</b> {{ record.status }}</div>
 
-          <div class="attention-note">
-            ⚠ {{ record.attentionNotes }}
-          </div>
+          <div><b>Brand:</b> {{ record.brand }}</div>
+          <div><b>fixedBrand:</b> {{ record.fixedBrand }}</div>
+
+          <div><b>purchaseDate:</b> {{ record.purchaseDate }}</div>
+          <div><b>fixedPurchaseDate:</b> {{ record.fixedPurchaseDate }}</div>
+
+          <div><b>Status:</b> {{ record.status }}</div>
+          <div><b>fixedStatus:</b> {{ record.fixedStatus }}</div>
+
+          <div><b>assignedTo:</b> {{ record.assignedTo }}</div>
+
+          <div><b>notes:</b> {{ record.notes }}</div>
+
+          <div><b>history:</b> {{ record.history }}</div>
+
+          <div><b>needsAttention:</b> {{ record.needsAttention }}</div>
+
+          <div><b>attentionNotes:</b> {{ record.attentionNotes }}</div>
 
         </div>
 
@@ -197,16 +218,12 @@ function deselectAllAttention() {
 <style scoped>
 
 .container {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: auto;
   padding: 30px;
   font-family: Arial;
   background: #0b0b0b;
   color: white;
-}
-
-h1 {
-  margin-bottom: 20px;
 }
 
 .section {
@@ -248,85 +265,38 @@ h1 {
   cursor: pointer;
 }
 
-.loading {
-  margin-top: 20px;
-}
-
-.error {
-  color: red;
-  margin-top: 20px;
-}
-
-
-/* RECORD BAR */
-
 .record-bar {
 
   display: flex;
   align-items: flex-start;
-
   gap: 15px;
 
   background: black;
-
   padding: 15px;
-
   margin-top: 10px;
 
   border-radius: 6px;
-
 }
-
-
-/* CORRECT */
 
 .correct {
-
   border: 4px solid #00ff88;
-
 }
-
-
-/* ATTENTION */
 
 .attention {
-
   border: 4px solid yellow;
-
 }
-
-
-/* FIELDS */
 
 .record-fields {
 
   display: grid;
-
-  grid-template-columns: repeat(5, auto);
-
-  gap: 20px;
+  grid-template-columns: repeat(4, auto);
+  gap: 15px;
 
   font-size: 14px;
-
 }
 
 .record-fields b {
-
   color: #00d0ff;
-
-}
-
-
-/* ATTENTION NOTE */
-
-.attention-note {
-
-  grid-column: span 5;
-
-  color: yellow;
-
-  font-weight: bold;
-
 }
 
 </style>
