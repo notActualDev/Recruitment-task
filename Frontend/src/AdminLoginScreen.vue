@@ -13,8 +13,16 @@ async function login() {
   try {
 
     const response = await fetch(
-        `${backendUrl}/Admin/Login?password=${encodeURIComponent(password.value)}`,
-        { method: "POST" }
+        `${backendUrl}/Admin/Login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            Password: password.value
+          })
+        }
     )
 
     if (!response.ok) {
@@ -24,7 +32,7 @@ async function login() {
 
     const data = await response.json()
 
-    const token = data.token
+    const token = data.Token
 
     if (token) {
 
