@@ -11,13 +11,20 @@ router = APIRouter(prefix="/JsonRepair")
 # def RepairJson():
 #     return {"ok": True}
 
-@router.post("/Repair", response_model=JsonRepairResponse)
+# @router.post("/Repair", response_model=JsonRepairResponse)
+# def RepairJson(
+#     request: JsonRepairRequest,
+#     service: LlmJsonRepairService = Depends(GetLlmJsonRepairService),
+#     _: None = Depends(RequireAdminToken)
+# ):
+#     result = service.repair_json(request.corruptedJson)
+#
+#     return result
+
+@router.post("/Repair")
 def RepairJson(
     request: JsonRepairRequest,
     service: LlmJsonRepairService = Depends(GetLlmJsonRepairService),
     _: None = Depends(RequireAdminToken)
 ):
     return {"ok": True}
-    # result = service.repair_json(request.corruptedJson)
-    #
-    # return result
