@@ -8,5 +8,9 @@
     <router-link to="/adminUsersScreen">
       Users management
     </router-link>
+
+    <router-link to="/adminDatabaseJsonSeedFixer">
+      Fix JSON
+    </router-link>
   </div>
 </template>
