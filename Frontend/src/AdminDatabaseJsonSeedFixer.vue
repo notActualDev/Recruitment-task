@@ -111,7 +111,8 @@ function deselectAllAttention() {
     </div>
 
 
-    <!-- CORRECT RECORDS -->
+
+    <!-- CORRECT -->
 
     <div v-if="correctRecords.length" class="section">
 
@@ -125,34 +126,36 @@ function deselectAllAttention() {
       <div
           v-for="record in correctRecords"
           :key="record.id"
-          class="record-bar correct"
+          class="record-card correct"
       >
 
-        <input type="checkbox" v-model="record.selected" />
+        <div class="checkbox">
+          <input type="checkbox" v-model="record.selected" />
+        </div>
 
         <div class="record-fields">
 
-          <div><b>ID:</b> {{ record.id }}</div>
-          <div><b>Name:</b> {{ record.name }}</div>
+          <div class="field"><span>ID</span>{{ record.id }}</div>
+          <div class="field"><span>Name</span>{{ record.name }}</div>
 
-          <div><b>Brand:</b> {{ record.brand }}</div>
-          <div><b>fixedBrand:</b> {{ record.fixedBrand }}</div>
+          <div class="field"><span>Brand</span>{{ record.brand }}</div>
+          <div class="field"><span>fixedBrand</span>{{ record.fixedBrand }}</div>
 
-          <div><b>purchaseDate:</b> {{ record.purchaseDate }}</div>
-          <div><b>fixedPurchaseDate:</b> {{ record.fixedPurchaseDate }}</div>
+          <div class="field"><span>purchaseDate</span>{{ record.purchaseDate }}</div>
+          <div class="field"><span>fixedPurchaseDate</span>{{ record.fixedPurchaseDate }}</div>
 
-          <div><b>Status:</b> {{ record.status }}</div>
-          <div><b>fixedStatus:</b> {{ record.fixedStatus }}</div>
+          <div class="field"><span>Status</span>{{ record.status }}</div>
+          <div class="field"><span>fixedStatus</span>{{ record.fixedStatus }}</div>
 
-          <div><b>assignedTo:</b> {{ record.assignedTo }}</div>
+          <div class="field"><span>assignedTo</span>{{ record.assignedTo }}</div>
 
-          <div><b>notes:</b> {{ record.notes }}</div>
+          <div class="field"><span>notes</span>{{ record.notes }}</div>
 
-          <div><b>history:</b> {{ record.history }}</div>
+          <div class="field"><span>history</span>{{ record.history }}</div>
 
-          <div><b>needsAttention:</b> {{ record.needsAttention }}</div>
+          <div class="field"><span>needsAttention</span>{{ record.needsAttention }}</div>
 
-          <div><b>attentionNotes:</b> {{ record.attentionNotes }}</div>
+          <div class="field"><span>attentionNotes</span>{{ record.attentionNotes }}</div>
 
         </div>
 
@@ -162,7 +165,7 @@ function deselectAllAttention() {
 
 
 
-    <!-- ATTENTION RECORDS -->
+    <!-- ATTENTION -->
 
     <div v-if="attentionRecords.length" class="section">
 
@@ -176,34 +179,36 @@ function deselectAllAttention() {
       <div
           v-for="record in attentionRecords"
           :key="record.id"
-          class="record-bar attention"
+          class="record-card attention"
       >
 
-        <input type="checkbox" v-model="record.selected" />
+        <div class="checkbox">
+          <input type="checkbox" v-model="record.selected" />
+        </div>
 
         <div class="record-fields">
 
-          <div><b>ID:</b> {{ record.id }}</div>
-          <div><b>Name:</b> {{ record.name }}</div>
+          <div class="field"><span>ID</span>{{ record.id }}</div>
+          <div class="field"><span>Name</span>{{ record.name }}</div>
 
-          <div><b>Brand:</b> {{ record.brand }}</div>
-          <div><b>fixedBrand:</b> {{ record.fixedBrand }}</div>
+          <div class="field"><span>Brand</span>{{ record.brand }}</div>
+          <div class="field"><span>fixedBrand</span>{{ record.fixedBrand }}</div>
 
-          <div><b>purchaseDate:</b> {{ record.purchaseDate }}</div>
-          <div><b>fixedPurchaseDate:</b> {{ record.fixedPurchaseDate }}</div>
+          <div class="field"><span>purchaseDate</span>{{ record.purchaseDate }}</div>
+          <div class="field"><span>fixedPurchaseDate</span>{{ record.fixedPurchaseDate }}</div>
 
-          <div><b>Status:</b> {{ record.status }}</div>
-          <div><b>fixedStatus:</b> {{ record.fixedStatus }}</div>
+          <div class="field"><span>Status</span>{{ record.status }}</div>
+          <div class="field"><span>fixedStatus</span>{{ record.fixedStatus }}</div>
 
-          <div><b>assignedTo:</b> {{ record.assignedTo }}</div>
+          <div class="field"><span>assignedTo</span>{{ record.assignedTo }}</div>
 
-          <div><b>notes:</b> {{ record.notes }}</div>
+          <div class="field"><span>notes</span>{{ record.notes }}</div>
 
-          <div><b>history:</b> {{ record.history }}</div>
+          <div class="field"><span>history</span>{{ record.history }}</div>
 
-          <div><b>needsAttention:</b> {{ record.needsAttention }}</div>
+          <div class="field"><span>needsAttention</span>{{ record.needsAttention }}</div>
 
-          <div><b>attentionNotes:</b> {{ record.attentionNotes }}</div>
+          <div class="field"><span>attentionNotes</span>{{ record.attentionNotes }}</div>
 
         </div>
 
@@ -218,7 +223,7 @@ function deselectAllAttention() {
 <style scoped>
 
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: auto;
   padding: 30px;
   font-family: Arial;
@@ -265,17 +270,35 @@ function deselectAllAttention() {
   cursor: pointer;
 }
 
-.record-bar {
+
+/* CARD STYLE (Stripe-like) */
+
+.record-card {
 
   display: flex;
-  align-items: flex-start;
-  gap: 15px;
 
-  background: black;
-  padding: 15px;
-  margin-top: 10px;
+  gap: 20px;
 
-  border-radius: 6px;
+  padding: 20px;
+
+  margin-top: 12px;
+
+  background: #050505;
+
+  border-radius: 8px;
+
+  transition: all 0.2s;
+
+}
+
+.record-card:hover {
+
+  background: #0f0f0f;
+
+  transform: translateY(-1px);
+
+  box-shadow: 0 0 12px rgba(0,0,0,0.6);
+
 }
 
 .correct {
@@ -286,17 +309,56 @@ function deselectAllAttention() {
   border: 4px solid yellow;
 }
 
+.checkbox {
+  padding-top: 6px;
+}
+
+
+/* FULL WIDTH GRID */
+
 .record-fields {
 
   display: grid;
-  grid-template-columns: repeat(4, auto);
-  gap: 15px;
 
-  font-size: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+  gap: 14px;
+
+  width: 100%;
+
 }
 
-.record-fields b {
-  color: #00d0ff;
+
+/* FIELD CARD */
+
+.field {
+
+  background: #111;
+
+  padding: 10px;
+
+  border-radius: 6px;
+
+  display: flex;
+
+  flex-direction: column;
+
+}
+
+.field span {
+
+  font-size: 11px;
+
+  color: #888;
+
+  margin-bottom: 3px;
+
+}
+
+.field {
+
+  font-size: 14px;
+
 }
 
 </style>
