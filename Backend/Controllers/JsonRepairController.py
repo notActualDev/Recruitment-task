@@ -7,13 +7,17 @@ from Services.AdminTokenService import RequireAdminToken
 
 router = APIRouter(prefix="/JsonRepair")
 
-@router.post("/Repair", response_model=JsonRepairResponse)
-def RepairJson(
-    request: JsonRepairRequest,
-    service: LlmJsonRepairService = Depends(GetLlmJsonRepairService),
-    _: None = Depends(RequireAdminToken)
-):
+@router.post("/Repair")
+def RepairJson():
+    return {"ok": True}
 
-    result = service.repair_json(request.corruptedJson)
-
-    return result
+# @router.post("/Repair", response_model=JsonRepairResponse)
+# def RepairJson(
+#     request: JsonRepairRequest,
+#     service: LlmJsonRepairService = Depends(GetLlmJsonRepairService),
+#     _: None = Depends(RequireAdminToken)
+# ):
+#
+#     result = service.repair_json(request.corruptedJson)
+#
+#     return result
