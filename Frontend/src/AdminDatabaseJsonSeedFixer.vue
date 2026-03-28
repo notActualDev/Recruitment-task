@@ -6,6 +6,9 @@ const records = ref([])
 const loading = ref(false)
 const error = ref(null)
 
+const correctOpen = ref(true)
+const attentionOpen = ref(true)
+
 const backendUrl = import.meta.env.VITE_BACKEND_URL
 
 async function fixJson() {
@@ -93,7 +96,7 @@ function deselectAllAttention() {
         v-model="jsonInput"
         placeholder="Paste corrupted JSON here..."
         class="json-input"
-    ></textarea>
+    />
 
     <button
         @click="fixJson"
@@ -112,50 +115,62 @@ function deselectAllAttention() {
 
 
 
-    <!-- CORRECT -->
+    <!-- CORRECT SECTION -->
 
     <div v-if="correctRecords.length" class="section">
 
-      <h2 class="correct-title">Correct records</h2>
+      <div class="section-header correct-border">
 
-      <div class="actions">
-        <button @click="selectAllCorrect">Select all</button>
-        <button @click="deselectAllCorrect">Deselect all</button>
-      </div>
+        <h2>Correct records</h2>
 
-      <div
-          v-for="record in correctRecords"
-          :key="record.id"
-          class="record-card correct"
-      >
+        <div class="section-buttons">
 
-        <div class="checkbox">
-          <input type="checkbox" v-model="record.selected" />
+          <button @click="correctOpen = !correctOpen">
+            {{ correctOpen ? "Collapse" : "Expand" }}
+          </button>
+
+          <button @click="selectAllCorrect">Select all</button>
+          <button @click="deselectAllCorrect">Deselect all</button>
+
         </div>
 
-        <div class="record-fields">
+      </div>
 
-          <div class="field"><span>ID</span>{{ record.id }}</div>
-          <div class="field"><span>Name</span>{{ record.name }}</div>
+      <div v-if="correctOpen">
 
-          <div class="field"><span>Brand</span>{{ record.brand }}</div>
-          <div class="field"><span>fixedBrand</span>{{ record.fixedBrand }}</div>
+        <div
+            v-for="record in correctRecords"
+            :key="record.id"
+            class="record-card correct"
+        >
 
-          <div class="field"><span>purchaseDate</span>{{ record.purchaseDate }}</div>
-          <div class="field"><span>fixedPurchaseDate</span>{{ record.fixedPurchaseDate }}</div>
+          <input type="checkbox" v-model="record.selected" class="checkbox" />
 
-          <div class="field"><span>Status</span>{{ record.status }}</div>
-          <div class="field"><span>fixedStatus</span>{{ record.fixedStatus }}</div>
+          <div class="record-fields">
 
-          <div class="field"><span>assignedTo</span>{{ record.assignedTo }}</div>
+            <div class="field"><b>ID</b>{{ record.id }}</div>
+            <div class="field"><b>Name</b>{{ record.name }}</div>
 
-          <div class="field"><span>notes</span>{{ record.notes }}</div>
+            <div class="field"><b>Brand</b>{{ record.brand }}</div>
+            <div class="field"><b>fixedBrand</b>{{ record.fixedBrand }}</div>
 
-          <div class="field"><span>history</span>{{ record.history }}</div>
+            <div class="field"><b>purchaseDate</b>{{ record.purchaseDate }}</div>
+            <div class="field"><b>fixedPurchaseDate</b>{{ record.fixedPurchaseDate }}</div>
 
-          <div class="field"><span>needsAttention</span>{{ record.needsAttention }}</div>
+            <div class="field"><b>Status</b>{{ record.status }}</div>
+            <div class="field"><b>fixedStatus</b>{{ record.fixedStatus }}</div>
 
-          <div class="field"><span>attentionNotes</span>{{ record.attentionNotes }}</div>
+            <div class="field"><b>assignedTo</b>{{ record.assignedTo }}</div>
+
+            <div class="field"><b>notes</b>{{ record.notes }}</div>
+
+            <div class="field"><b>history</b>{{ record.history }}</div>
+
+            <div class="field"><b>needsAttention</b>{{ record.needsAttention }}</div>
+
+            <div class="field"><b>attentionNotes</b>{{ record.attentionNotes }}</div>
+
+          </div>
 
         </div>
 
@@ -165,50 +180,62 @@ function deselectAllAttention() {
 
 
 
-    <!-- ATTENTION -->
+    <!-- ATTENTION SECTION -->
 
     <div v-if="attentionRecords.length" class="section">
 
-      <h2 class="attention-title">Records that need attention</h2>
+      <div class="section-header attention-border">
 
-      <div class="actions">
-        <button @click="selectAllAttention">Select all</button>
-        <button @click="deselectAllAttention">Deselect all</button>
-      </div>
+        <h2>Records that need attention</h2>
 
-      <div
-          v-for="record in attentionRecords"
-          :key="record.id"
-          class="record-card attention"
-      >
+        <div class="section-buttons">
 
-        <div class="checkbox">
-          <input type="checkbox" v-model="record.selected" />
+          <button @click="attentionOpen = !attentionOpen">
+            {{ attentionOpen ? "Collapse" : "Expand" }}
+          </button>
+
+          <button @click="selectAllAttention">Select all</button>
+          <button @click="deselectAllAttention">Deselect all</button>
+
         </div>
 
-        <div class="record-fields">
+      </div>
 
-          <div class="field"><span>ID</span>{{ record.id }}</div>
-          <div class="field"><span>Name</span>{{ record.name }}</div>
+      <div v-if="attentionOpen">
 
-          <div class="field"><span>Brand</span>{{ record.brand }}</div>
-          <div class="field"><span>fixedBrand</span>{{ record.fixedBrand }}</div>
+        <div
+            v-for="record in attentionRecords"
+            :key="record.id"
+            class="record-card attention"
+        >
 
-          <div class="field"><span>purchaseDate</span>{{ record.purchaseDate }}</div>
-          <div class="field"><span>fixedPurchaseDate</span>{{ record.fixedPurchaseDate }}</div>
+          <input type="checkbox" v-model="record.selected" class="checkbox" />
 
-          <div class="field"><span>Status</span>{{ record.status }}</div>
-          <div class="field"><span>fixedStatus</span>{{ record.fixedStatus }}</div>
+          <div class="record-fields">
 
-          <div class="field"><span>assignedTo</span>{{ record.assignedTo }}</div>
+            <div class="field"><b>ID</b>{{ record.id }}</div>
+            <div class="field"><b>Name</b>{{ record.name }}</div>
 
-          <div class="field"><span>notes</span>{{ record.notes }}</div>
+            <div class="field"><b>Brand</b>{{ record.brand }}</div>
+            <div class="field"><b>fixedBrand</b>{{ record.fixedBrand }}</div>
 
-          <div class="field"><span>history</span>{{ record.history }}</div>
+            <div class="field"><b>purchaseDate</b>{{ record.purchaseDate }}</div>
+            <div class="field"><b>fixedPurchaseDate</b>{{ record.fixedPurchaseDate }}</div>
 
-          <div class="field"><span>needsAttention</span>{{ record.needsAttention }}</div>
+            <div class="field"><b>Status</b>{{ record.status }}</div>
+            <div class="field"><b>fixedStatus</b>{{ record.fixedStatus }}</div>
 
-          <div class="field"><span>attentionNotes</span>{{ record.attentionNotes }}</div>
+            <div class="field"><b>assignedTo</b>{{ record.assignedTo }}</div>
+
+            <div class="field"><b>notes</b>{{ record.notes }}</div>
+
+            <div class="field"><b>history</b>{{ record.history }}</div>
+
+            <div class="field"><b>needsAttention</b>{{ record.needsAttention }}</div>
+
+            <div class="field"><b>attentionNotes</b>{{ record.attentionNotes }}</div>
+
+          </div>
 
         </div>
 
@@ -222,143 +249,111 @@ function deselectAllAttention() {
 
 <style scoped>
 
-.container {
-  max-width: 1400px;
-  margin: auto;
-  padding: 30px;
-  font-family: Arial;
-  background: #0b0b0b;
-  color: white;
+.container{
+  max-width:1600px;
+  margin:auto;
+  padding:30px;
+  background:#0b0b0b;
+  color:white;
+  font-family:Arial;
 }
 
-.section {
-  margin-top: 40px;
+.section{
+  margin-top:40px;
 }
 
-.correct-title {
-  color: #00ff88;
+.section-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px;
+  margin-bottom:10px;
 }
 
-.attention-title {
-  color: yellow;
+.correct-border{
+  border-left:6px solid #00ff88;
 }
 
-.json-input {
-  width: 100%;
-  height: 220px;
-  font-family: monospace;
-  padding: 10px;
-  background: #111;
-  color: #00ff88;
-  border: 1px solid #333;
+.attention-border{
+  border-left:6px solid yellow;
 }
 
-.fix-button {
-  margin-top: 15px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
+.section-buttons button{
+  margin-left:8px;
+  padding:6px 12px;
+  cursor:pointer;
 }
 
-.actions {
-  margin-bottom: 15px;
+.json-input{
+  width:100%;
+  height:200px;
+  background:#111;
+  color:#00ff88;
+  border:1px solid #333;
+  padding:10px;
+  font-family:monospace;
 }
 
-.actions button {
-  margin-right: 10px;
-  padding: 6px 12px;
-  cursor: pointer;
+.fix-button{
+  margin-top:10px;
+  padding:10px 20px;
+  cursor:pointer;
 }
 
-
-/* CARD STYLE (Stripe-like) */
-
-.record-card {
-
-  display: flex;
-
-  gap: 20px;
-
-  padding: 20px;
-
-  margin-top: 12px;
-
-  background: #050505;
-
-  border-radius: 8px;
-
-  transition: all 0.2s;
-
+.record-card{
+  display:flex;
+  gap:15px;
+  margin-top:12px;
+  padding:18px;
+  background:#050505;
+  border-radius:8px;
+  transition:0.2s;
 }
 
-.record-card:hover {
-
-  background: #0f0f0f;
-
-  transform: translateY(-1px);
-
-  box-shadow: 0 0 12px rgba(0,0,0,0.6);
-
+.record-card:hover{
+  background:#0f0f0f;
+  box-shadow:0 0 12px rgba(0,0,0,0.6);
 }
 
-.correct {
-  border: 4px solid #00ff88;
+.correct{
+  border:3px solid #00ff88;
 }
 
-.attention {
-  border: 4px solid yellow;
+.attention{
+  border:3px solid yellow;
 }
 
-.checkbox {
-  padding-top: 6px;
+.checkbox{
+  margin-top:5px;
 }
 
+.record-fields{
+  display:grid;
 
-/* FULL WIDTH GRID */
+  /* WYPEŁNIA CAŁĄ SZEROKOŚĆ */
 
-.record-fields {
+  grid-template-columns: repeat(auto-fit,minmax(320px,1fr));
 
-  display: grid;
+  gap:10px;
 
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-
-  gap: 14px;
-
-  width: 100%;
-
+  width:100%;
 }
 
+.field{
+  background:#111;
+  padding:8px 10px;
+  border-radius:6px;
 
-/* FIELD CARD */
+  display:flex;
+  flex-direction:column;
 
-.field {
-
-  background: #111;
-
-  padding: 10px;
-
-  border-radius: 6px;
-
-  display: flex;
-
-  flex-direction: column;
-
+  font-size:13px;
 }
 
-.field span {
-
-  font-size: 11px;
-
-  color: #888;
-
-  margin-bottom: 3px;
-
-}
-
-.field {
-
-  font-size: 14px;
-
+.field b{
+  font-size:10px;
+  color:#999;
+  margin-bottom:3px;
 }
 
 </style>
