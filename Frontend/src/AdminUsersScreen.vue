@@ -31,7 +31,7 @@ async function createUser() {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      admin_token: token
+      "admin-token": token
     },
     body: JSON.stringify({
       Email: email.value,
