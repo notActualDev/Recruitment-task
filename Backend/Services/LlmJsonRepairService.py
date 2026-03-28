@@ -18,11 +18,8 @@ class LlmJsonRepairService:
     def repair_json(self, corrupted_json: str):
 
         payload = {
-
             "model": "llama-3.1-8b-instant",
-
             "temperature": 0,
-
             "messages": [
                 {
                     "role": "system",
@@ -33,7 +30,6 @@ class LlmJsonRepairService:
                     "content": corrupted_json
                 }
             ]
-
         }
 
         headers = {
@@ -56,11 +52,29 @@ class LlmJsonRepairService:
         if "choices" not in data:
             raise Exception(f"Unexpected Groq response: {data}")
 
-        content = data["choices"][0]["message"]["content"]
+        content = data["choices"][0]["message"]["content"].strip()
+
+        # -------- CLEAN RESPONSE --------
+
+        # remove ```json markdown
+        if content.startswith("```"):
+            parts = content.split("```")
+            if len(parts) >= 2:
+                content = parts[1]
+            content = content.replace("json", "").strip()
+
+        # extract JSON array
+        start = content.find("[")
+        end = content.rfind("]")
+
+        if start == -1 or end == -1:
+            raise Exception(f"LLM did not return JSON array:\n{content}")
+
+        content = content[start:end + 1]
 
         try:
             parsed = json.loads(content)
         except Exception:
-            raise Exception(f"LLM returned invalid JSON: {content}")
+            raise Exception(f"LLM returned invalid JSON:\n{content}")
 
         return parsed

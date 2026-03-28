@@ -21,6 +21,8 @@ OUTPUT FORMAT
 
 Return ONLY a valid JSON array.
 
+The output must start with "[" and end with "]".
+
 Each record MUST contain ALL of the following fields:
 
 {
@@ -46,13 +48,12 @@ FIELD RULES
 
 id
 Do NOT modify.
-Keep the value exactly as in the input.
 
 name
 Do NOT modify.
 
 brand
-Do NOT modify the original value.
+Do NOT modify.
 
 fixedBrand
 If brand contains a typo or incorrect capitalization,
@@ -60,7 +61,7 @@ place the corrected brand here.
 Otherwise null.
 
 purchaseDate
-Do NOT modify the original value.
+Do NOT modify.
 
 fixedPurchaseDate
 If purchaseDate format is incorrect,
@@ -68,9 +69,9 @@ provide corrected ISO format (YYYY-MM-DD).
 Otherwise null.
 
 status
-Do NOT modify the original value.
+Do NOT modify.
 
-Allowed status values are:
+Allowed status values:
 Available
 In Use
 Repair
@@ -103,7 +104,7 @@ Set needsAttention = true if any of the following occur:
 • corrupted fields were repaired
 • notes indicate hardware damage but status is not "Repair"
 
-If needsAttention = true, write a short explanation in attentionNotes.
+If needsAttention = true write a short explanation in attentionNotes.
 
 Otherwise:
 
@@ -114,8 +115,8 @@ attentionNotes = null
 STRICT RULES
 
 Return ONLY valid JSON.
-Return ONLY the array of records.
-Do NOT include explanations.
-Do NOT include markdown.
-Do NOT include comments.
+Return ONLY the JSON array.
+Do not include explanations.
+Do not include markdown.
+Do not include comments.
 """
