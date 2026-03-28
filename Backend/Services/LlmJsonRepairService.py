@@ -15,36 +15,6 @@ class LlmJsonRepairService:
 
         self.url = "https://api.groq.com/openai/v1/chat/completions"
 
-        self.schema = {
-            "type": "object",
-            "properties": {
-                "repairedJson": {"type": "array"},
-                "normalizedRecords": {"type": "array"},
-                "audit": {
-                    "type": "object",
-                    "properties": {
-                        "duplicateIds": {"type": "array"},
-                        "futureDates": {"type": "array"},
-                        "invalidEmails": {"type": "array"},
-                        "unknownStatuses": {"type": "array"},
-                        "recordsNeedingReview": {"type": "array"}
-                    },
-                    "required": [
-                        "duplicateIds",
-                        "futureDates",
-                        "invalidEmails",
-                        "unknownStatuses",
-                        "recordsNeedingReview"
-                    ]
-                }
-            },
-            "required": [
-                "repairedJson",
-                "normalizedRecords",
-                "audit"
-            ]
-        }
-
     def repair_json(self, corrupted_json: str):
 
         payload = {
@@ -62,15 +32,8 @@ class LlmJsonRepairService:
                     "role": "user",
                     "content": corrupted_json
                 }
-            ],
+            ]
 
-            "response_format": {
-                "type": "json_schema",
-                "json_schema": {
-                    "name": "json_repair_schema",
-                    "schema": self.schema
-                }
-            }
         }
 
         headers = {
@@ -90,11 +53,14 @@ class LlmJsonRepairService:
 
         data = response.json()
 
+        if "choices" not in data:
+            raise Exception(f"Unexpected Groq response: {data}")
+
         content = data["choices"][0]["message"]["content"]
 
         try:
             parsed = json.loads(content)
         except Exception:
-            raise Exception("LLM returned invalid JSON")
+            raise Exception(f"LLM returned invalid JSON: {content}")
 
         return parsed
