@@ -2,6 +2,7 @@ import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
+from Controllers import JsonRepairController
 from Controllers.AdminController import router as AdminRouter
 from Controllers.UsersController import router as UsersRouter
 
@@ -19,6 +20,7 @@ app.add_middleware(
 
 app.include_router(AdminRouter)
 app.include_router(UsersRouter)
+app.include_router(JsonRepairController.router)
 
 @app.get("/")
 def root():
