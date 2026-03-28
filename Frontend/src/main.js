@@ -9,7 +9,6 @@ import MinusPage from './MinusPage.vue'
 import AdminLoginScreen from './AdminLoginScreen.vue'
 import AdminMainScreen from "@/AdminMainScreen.vue";
 import AdminUsersScreen from "@/AdminUsersScreen.vue";
-import AdminDatabaseJsonSeedFixer from "@/AdminDatabaseJsonSeedFixer.vue";
 
 const routes = [
     { path: '/', component: AddPage },
@@ -17,7 +16,6 @@ const routes = [
     { path: '/adminLoginScreen', component: AdminLoginScreen },
     { path: '/adminMainScreen', component: AdminMainScreen },
     { path: '/adminUsersScreen', component: AdminUsersScreen },
-    { path: '/adminDatabaseJsonSeedFixer', component: AdminDatabaseJsonSeedFixer }
 ]
 
 const router = createRouter({
