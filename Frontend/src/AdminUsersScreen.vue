@@ -13,7 +13,7 @@ async function loadUsers() {
 
   const response = await fetch(`${apiUrl}/Users/GetAllUsers`, {
     headers: {
-      admin_token: token
+      "admin-token": token
     }
   })
 
