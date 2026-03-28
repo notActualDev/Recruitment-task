@@ -13,7 +13,7 @@ async function login() {
   try {
 
     const response = await fetch(
-        `${backendUrl}/admin/login?password=${encodeURIComponent(password.value)}`,
+        `${backendUrl}/Admin/Login?password=${encodeURIComponent(password.value)}`,
         { method: "POST" }
     )
 
