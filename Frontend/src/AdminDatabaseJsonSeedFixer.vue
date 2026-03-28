@@ -41,7 +41,6 @@ async function fixJson() {
 
     const data = await response.json()
 
-    // zapisujemy rekordy
     records.value = data.map(r => ({
       ...r,
       selected: false
@@ -65,6 +64,23 @@ const correctRecords = computed(() =>
 const attentionRecords = computed(() =>
     records.value.filter(r => r.needsAttention)
 )
+
+
+function selectAllCorrect() {
+  correctRecords.value.forEach(r => r.selected = true)
+}
+
+function deselectAllCorrect() {
+  correctRecords.value.forEach(r => r.selected = false)
+}
+
+function selectAllAttention() {
+  attentionRecords.value.forEach(r => r.selected = true)
+}
+
+function deselectAllAttention() {
+  attentionRecords.value.forEach(r => r.selected = false)
+}
 
 </script>
 
@@ -98,14 +114,19 @@ const attentionRecords = computed(() =>
 
     <!-- CORRECT RECORDS -->
 
-    <div v-if="correctRecords.length">
+    <div v-if="correctRecords.length" class="section">
 
-      <h2>Correct records</h2>
+      <h2 class="correct-title">Correct records</h2>
+
+      <div class="actions">
+        <button @click="selectAllCorrect">Select all</button>
+        <button @click="deselectAllCorrect">Deselect all</button>
+      </div>
 
       <div
           v-for="record in correctRecords"
           :key="record.id"
-          class="record-bar"
+          class="record-bar correct"
       >
 
         <input
@@ -131,9 +152,14 @@ const attentionRecords = computed(() =>
 
     <!-- ATTENTION RECORDS -->
 
-    <div v-if="attentionRecords.length">
+    <div v-if="attentionRecords.length" class="section">
 
-      <h2>Records that need attention</h2>
+      <h2 class="attention-title">Records that need attention</h2>
+
+      <div class="actions">
+        <button @click="selectAllAttention">Select all</button>
+        <button @click="deselectAllAttention">Deselect all</button>
+      </div>
 
       <div
           v-for="record in attentionRecords"
@@ -175,6 +201,24 @@ const attentionRecords = computed(() =>
   margin: auto;
   padding: 30px;
   font-family: Arial;
+  background: #0b0b0b;
+  color: white;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+.section {
+  margin-top: 40px;
+}
+
+.correct-title {
+  color: #00ff88;
+}
+
+.attention-title {
+  color: yellow;
 }
 
 .json-input {
@@ -182,12 +226,26 @@ const attentionRecords = computed(() =>
   height: 220px;
   font-family: monospace;
   padding: 10px;
+  background: #111;
+  color: #00ff88;
+  border: 1px solid #333;
 }
 
 .fix-button {
   margin-top: 15px;
   padding: 10px 20px;
   font-size: 16px;
+  cursor: pointer;
+}
+
+.actions {
+  margin-bottom: 15px;
+}
+
+.actions button {
+  margin-right: 10px;
+  padding: 6px 12px;
+  cursor: pointer;
 }
 
 .loading {
@@ -199,6 +257,9 @@ const attentionRecords = computed(() =>
   margin-top: 20px;
 }
 
+
+/* RECORD BAR */
+
 .record-bar {
 
   display: flex;
@@ -206,19 +267,36 @@ const attentionRecords = computed(() =>
 
   gap: 15px;
 
-  background: #f4f4f4;
+  background: black;
 
   padding: 15px;
 
   margin-top: 10px;
 
   border-radius: 6px;
+
 }
 
-.record-bar.attention {
 
-  background: #ffe6e6;
+/* CORRECT */
+
+.correct {
+
+  border: 4px solid #00ff88;
+
 }
+
+
+/* ATTENTION */
+
+.attention {
+
+  border: 4px solid yellow;
+
+}
+
+
+/* FIELDS */
 
 .record-fields {
 
@@ -229,15 +307,26 @@ const attentionRecords = computed(() =>
   gap: 20px;
 
   font-size: 14px;
+
 }
+
+.record-fields b {
+
+  color: #00d0ff;
+
+}
+
+
+/* ATTENTION NOTE */
 
 .attention-note {
 
   grid-column: span 5;
 
-  color: red;
+  color: yellow;
 
   font-weight: bold;
+
 }
 
 </style>
