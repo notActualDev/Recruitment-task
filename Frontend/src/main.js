@@ -8,12 +8,14 @@ import AddPage from './AddPage.vue'
 import MinusPage from './MinusPage.vue'
 import AdminLoginScreen from './AdminLoginScreen.vue'
 import AdminMainScreen from "@/AdminMainScreen.vue";
+import AdminUsersScreen from "@/AdminUsersScreen.vue";
 
 const routes = [
     { path: '/', component: AddPage },
     { path: '/minus', component: MinusPage },
     { path: '/adminLoginScreen', component: AdminLoginScreen },
     { path: '/adminMainScreen', component: AdminMainScreen },
+    { path: '/adminUsersScreen', component: AdminUsersScreen },
 ]
 
 const router = createRouter({

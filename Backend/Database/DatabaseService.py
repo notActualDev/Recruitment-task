@@ -1,22 +1,34 @@
 import sqlite3
 import os
-from pathlib import Path
+
 
 class DatabaseService:
 
     def __init__(self):
-        self.DbPath = os.getenv("DB_PATH", "/app/data/database.db")
-        self.EnsureDatabaseDirectory()
 
-    def EnsureDatabaseDirectory(self):
-        Path(self.DbPath).parent.mkdir(parents=True, exist_ok=True)
+        db_directory = os.getenv("DB_PATH", "/app/data")
+        db_file = os.path.join(db_directory, "database.db")
+
+        os.makedirs(db_directory, exist_ok=True)
+
+        self.connection = sqlite3.connect(
+            db_file,
+            check_same_thread=False,
+            timeout=30
+        )
+
+        self.connection.row_factory = sqlite3.Row
+
+        self._ConfigureDatabase()
+
+    def _ConfigureDatabase(self):
+
+        cursor = self.connection.cursor()
+
+        cursor.execute("PRAGMA journal_mode=WAL;")
+        cursor.execute("PRAGMA synchronous=NORMAL;")
+
+        self.connection.commit()
 
     def GetConnection(self):
-        conn = sqlite3.connect(
-            self.DbPath,
-            timeout=10,
-            check_same_thread=False
-        )
-        conn.row_factory = sqlite3.Row
-        conn.execute("PRAGMA journal_mode=WAL;")
-        return conn
+        return self.connection

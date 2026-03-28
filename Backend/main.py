@@ -1,13 +1,11 @@
-from datetime import datetime, timedelta
+import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-import os
-import bcrypt
-from services.admin_token_service import AdminTokenService
+
+from Controllers.AdminController import router as AdminRouter
+from Controllers.UsersController import router as UsersRouter
 
 app = FastAPI()
-
-token_service = AdminTokenService(lifetime_minutes=15)
 
 frontend_url = os.getenv("FRONTEND_URL", "*")
 
@@ -19,24 +17,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(AdminRouter)
+app.include_router(UsersRouter)
+
 @app.get("/")
 def root():
     return {"message": "Hello World"}
 
-@app.post("/admin/login")
-def admin_login(password: str):
-
-    stored_hash = os.getenv("ADMIN_PASSWORD_HASH", "").strip()
-
-    if not stored_hash:
-        raise HTTPException(status_code=500, detail="Admin hash not configured")
-
-    if not bcrypt.checkpw(password.encode(), stored_hash.encode()):
-        raise HTTPException(status_code=401, detail="Invalid password")
-
-    token, expiration = token_service.get_or_create_token()
-
-    return {
-        "token": token,
-        "expiration": expiration.isoformat()
-    }

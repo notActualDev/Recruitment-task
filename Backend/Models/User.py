@@ -1,8 +1,10 @@
 from pydantic import BaseModel
 from datetime import datetime
 
+
 class User(BaseModel):
-    Id: int
-    Email: str
-    PasswordHash: str
-    CreatedAt: datetime
+
+    id: int
+    email: str
+    password_hash: str
+    created_at: datetime
