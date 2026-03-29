@@ -37,6 +37,6 @@ def SeedAcceptedRecords(
         _: None = Depends(RequireAdminToken)
 ):
 
-    repo.ReplaceAllRecords(request.Records)
+    repo.InsertManyHardware(request.Records)
 
     return request

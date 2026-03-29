@@ -25,6 +25,36 @@ class HardwareRepository:
 
         self.connection.commit()
 
+    def InsertManyHardware(self, records):
+
+        cursor = self.connection.cursor()
+
+        data = []
+
+        for r in records:
+            data.append(
+                (
+                    r.Name,
+                    r.Brand,
+                    r.PurchaseDate,
+                    r.Status,
+                    r.AssignedTo,
+                    r.Notes,
+                    r.History
+                )
+            )
+
+        cursor.executemany(
+            """
+            INSERT INTO Hardware
+                (Name, Brand, PurchaseDate, Status, AssignedTo, Notes, History)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            data
+        )
+
+        self.connection.commit()
+
     def ReplaceAllRecords(self, records):
 
         cursor = self.connection.cursor()
