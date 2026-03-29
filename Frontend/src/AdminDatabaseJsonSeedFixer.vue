@@ -121,7 +121,9 @@ function deselectAllAttention(){
             class="record correct"
         >
 
-          <input type="checkbox" v-model="record.selected">
+          <div class="checkbox-col">
+            <input type="checkbox" v-model="record.selected">
+          </div>
 
           <div class="fields">
 
@@ -183,7 +185,9 @@ function deselectAllAttention(){
             class="record attention"
         >
 
-          <input type="checkbox" v-model="record.selected">
+          <div class="checkbox-col">
+            <input type="checkbox" v-model="record.selected">
+          </div>
 
           <div class="fields">
 
@@ -234,37 +238,25 @@ function deselectAllAttention(){
 /* strona */
 
 .page{
-
   width:100vw;
   padding:30px;
-
   background:#0b0b0b;
   color:white;
-
   font-family:Arial;
-
   box-sizing:border-box;
-
 }
 
 /* textarea */
 
 .json-input{
-
   width:100%;
   height:200px;
-
   background:#111;
   color:#00ff88;
-
   border:1px solid #333;
-
   padding:10px;
-
   font-family:monospace;
-
   margin-bottom:10px;
-
 }
 
 /* button */
@@ -282,13 +274,10 @@ function deselectAllAttention(){
 }
 
 .section-header{
-
   display:flex;
   justify-content:space-between;
   align-items:center;
-
   margin-bottom:10px;
-
 }
 
 .correct-border{
@@ -304,24 +293,14 @@ function deselectAllAttention(){
 /* rekord */
 
 .record{
-
   display:flex;
   gap:15px;
-
   background:#050505;
-
   padding:15px;
-
   margin-top:10px;
-
   border-radius:6px;
-
   width:100%;
-
-}
-
-.record input{
-  margin-top:6px;
+  align-items:center;
 }
 
 .correct{
@@ -332,44 +311,44 @@ function deselectAllAttention(){
   border:3px solid yellow;
 }
 
-/* szeroki układ */
+/* checkbox kolumna */
+
+.checkbox-col{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:40px;
+}
+
+.checkbox-col input{
+  transform:scale(1.6);
+  cursor:pointer;
+}
+
+/* pola */
 
 .fields{
-
   display:grid;
-
   grid-template-columns:repeat(8,minmax(120px,1fr));
-
   gap:8px;
-
   width:100%;
-
 }
 
 /* pole */
 
 .field{
-
   background:#111;
-
   padding:6px 8px;
-
   border-radius:4px;
-
   display:flex;
   flex-direction:column;
-
   font-size:12px;
-
 }
 
 .field b{
-
   font-size:9px;
   color:#999;
-
   margin-bottom:2px;
-
 }
 
 </style>
