@@ -95,7 +95,21 @@ class HardwareRepository:
 
         rows = cursor.fetchall()
 
-        return rows
+        result = []
+
+        for r in rows:
+            result.append({
+                "Id": r[0],
+                "Name": r[1],
+                "Brand": r[2],
+                "PurchaseDate": r[3],
+                "Status": r[4],
+                "AssignedTo": r[5],
+                "Notes": r[6],
+                "History": r[7]
+            })
+
+        return result
 
 
     def GetHardwareById(self, hardware_id):
