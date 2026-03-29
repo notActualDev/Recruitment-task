@@ -3,6 +3,7 @@ from Services.DependencyProvider import GetLlmJsonRepairService
 from Models.JsonRepairRequest import JsonRepairRequest
 from Services.LlmJsonRepairService import LlmJsonRepairService
 from Services.AdminTokenService import RequireAdminToken
+from Models.SeedAcceptedHardwareRequest import SeedAcceptedHardwareRequest
 
 router = APIRouter(prefix="/JsonRepair")
 
@@ -16,3 +17,12 @@ def RepairJson(
     result = service.repair_json(request.corruptedJson)
 
     return result
+
+
+@router.post("/SeedAcceptedRecords")
+def SeedAcceptedRecords(
+    request: SeedAcceptedHardwareRequest,
+    _: None = Depends(RequireAdminToken)
+):
+    # DEBUG: zwracamy dokładnie ten sam JSON
+    return request
