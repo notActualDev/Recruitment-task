@@ -9,7 +9,7 @@ class UsersService:
     def __init__(self, usersRepository: UsersRepository):
         self.repo = usersRepository
 
-        # token -> expiration
+        # token -> { email, expiration }
         self.activeTokens = {}
 
         self.tokenLifetime = timedelta(minutes=15)
@@ -22,7 +22,6 @@ class UsersService:
         if not user:
             return None
 
-        # poprawione pole password_hash
         if not bcrypt.checkpw(
             password.encode(),
             user.password_hash.encode()
@@ -33,20 +32,42 @@ class UsersService:
 
         expiration = datetime.utcnow() + self.tokenLifetime
 
-        self.activeTokens[token] = expiration
+        # zapisujemy email razem z tokenem
+        self.activeTokens[token] = {
+            "email": email,
+            "expiration": expiration
+        }
 
         return token
 
 
     def ValidateToken(self, token: str):
 
-        expiration = self.activeTokens.get(token)
+        tokenData = self.activeTokens.get(token)
 
-        if not expiration:
+        if not tokenData:
             return False
+
+        expiration = tokenData["expiration"]
 
         if expiration < datetime.utcnow():
             del self.activeTokens[token]
             return False
 
         return True
+
+
+    def GetEmailByToken(self, token: str):
+
+        tokenData = self.activeTokens.get(token)
+
+        if not tokenData:
+            return None
+
+        expiration = tokenData["expiration"]
+
+        if expiration < datetime.utcnow():
+            del self.activeTokens[token]
+            return None
+
+        return tokenData["email"]
