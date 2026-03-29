@@ -71,6 +71,16 @@ async function createHardware() {
       throw new Error("Create failed")
     }
 
+    form.value = {
+      Name: "",
+      Brand: "",
+      PurchaseDate: "",
+      Status: "Available",
+      AssignedTo: "",
+      Notes: "",
+      History: ""
+    }
+
     await loadHardware()
 
   } catch (e) {
@@ -188,6 +198,8 @@ onMounted(loadHardware)
         <th>Brand</th>
         <th>Status</th>
         <th>Assigned</th>
+        <th>Notes</th>
+        <th>History</th>
         <th>Actions</th>
       </tr>
       </thead>
@@ -217,6 +229,14 @@ onMounted(loadHardware)
 
         <td>
           <input v-model="item.AssignedTo" />
+        </td>
+
+        <td>
+          <input v-model="item.Notes" />
+        </td>
+
+        <td>
+          <input v-model="item.History" />
         </td>
 
         <td>
