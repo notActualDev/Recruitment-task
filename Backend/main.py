@@ -1,10 +1,12 @@
 import os
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from Controllers import JsonRepairController
 from Controllers.AdminController import router as AdminRouter
 from Controllers.UsersController import router as UsersRouter
+from Controllers.JsonRepairController import router as HardwareRouter
+
 
 app = FastAPI()
 
@@ -21,8 +23,11 @@ app.add_middleware(
 app.include_router(AdminRouter)
 app.include_router(UsersRouter)
 app.include_router(JsonRepairController.router)
+app.include_router(HardwareRouter)
+
 
 @app.get("/")
 def root():
     return {"message": "Hello World"}
+
 

@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends
-from Services.DependencyProvider import GetLlmJsonRepairService
+from Services.DependencyProvider import GetLlmJsonRepairService, GetHardwareRepository
 from Models.JsonRepairRequest import JsonRepairRequest
 from Services.LlmJsonRepairService import LlmJsonRepairService
 from Services.AdminTokenService import RequireAdminToken
 from Models.SeedAcceptedHardwareRequest import SeedAcceptedHardwareRequest
+from Database.HardwareRepository import HardwareRepository
 
 router = APIRouter(prefix="/JsonRepair")
 
@@ -19,10 +20,23 @@ def RepairJson(
     return result
 
 
+# @router.post("/SeedAcceptedRecords")
+# def SeedAcceptedRecords(
+#         request: SeedAcceptedHardwareRequest,
+#         _: None = Depends(RequireAdminToken)
+# ):
+#     # DEBUG: zwracamy dokładnie ten sam JSON
+#     return request
+
+
+
 @router.post("/SeedAcceptedRecords")
 def SeedAcceptedRecords(
         request: SeedAcceptedHardwareRequest,
+        repo: HardwareRepository = Depends(GetHardwareRepository),
         _: None = Depends(RequireAdminToken)
 ):
-    # DEBUG: zwracamy dokładnie ten sam JSON
+
+    repo.ReplaceAllRecords(request.Records)
+
     return request
