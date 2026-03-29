@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const email = ref('')
@@ -9,6 +9,11 @@ const loading = ref(false)
 
 const router = useRouter()
 const backendUrl = import.meta.env.VITE_BACKEND_URL
+
+onMounted(() => {
+  localStorage.removeItem('userToken')
+  localStorage.removeItem('userEmail')
+})
 
 async function login() {
   message.value = ''
