@@ -10,9 +10,9 @@ router = APIRouter(prefix="/JsonRepair")
 
 @router.post("/Repair")
 def RepairJson(
-    request: JsonRepairRequest,
-    service: LlmJsonRepairService = Depends(GetLlmJsonRepairService),
-    _: None = Depends(RequireAdminToken)
+        request: JsonRepairRequest,
+        service: LlmJsonRepairService = Depends(GetLlmJsonRepairService),
+        _: None = Depends(RequireAdminToken)
 ):
     result = service.repair_json(request.corruptedJson)
 
@@ -21,8 +21,8 @@ def RepairJson(
 
 @router.post("/SeedAcceptedRecords")
 def SeedAcceptedRecords(
-    request: SeedAcceptedHardwareRequest,
-    _: None = Depends(RequireAdminToken)
+        request: SeedAcceptedHardwareRequest,
+        _: None = Depends(RequireAdminToken)
 ):
     # DEBUG: zwracamy dokładnie ten sam JSON
     return request
