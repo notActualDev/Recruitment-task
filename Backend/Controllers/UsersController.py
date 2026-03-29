@@ -5,8 +5,8 @@ from Models.CreateUserRequest import CreateUserRequest
 from Models import User
 from Database.UsersRepository import UsersRepository
 import bcrypt
-from Models.Users import LoginUserRequest
-from Models.Users import LoginUserResponse
+from Models import LoginUserRequest
+from Models import LoginUserResponse
 
 router = APIRouter(prefix="/Users")
 
