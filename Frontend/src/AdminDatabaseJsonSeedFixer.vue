@@ -11,62 +11,54 @@ const attentionOpen = ref(true)
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL
 
-async function fixJson() {
+async function fixJson(){
 
-  error.value = null
-  records.value = []
+  error.value=null
+  records.value=[]
 
-  const token = localStorage.getItem("adminToken")
+  const token=localStorage.getItem("adminToken")
 
-  if (!token) {
-    error.value = "Admin token not found"
+  if(!token){
+    error.value="Admin token not found"
     return
   }
 
-  loading.value = true
+  loading.value=true
 
-  try {
+  try{
 
-    const response = await fetch(`${backendUrl}/JsonRepair/Repair`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "admin-token": token
+    const response=await fetch(`${backendUrl}/JsonRepair/Repair`,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "admin-token":token
       },
-      body: JSON.stringify({
-        corruptedJson: jsonInput.value
+      body:JSON.stringify({
+        corruptedJson:jsonInput.value
       })
     })
 
-    if (!response.ok) {
-      throw new Error(`Backend error: ${response.status}`)
+    if(!response.ok){
+      throw new Error(`Backend error ${response.status}`)
     }
 
-    const data = await response.json()
+    const data=await response.json()
 
-    records.value = data.map(r => ({
+    records.value=data.map(r=>({
       ...r,
-      selected: false
+      selected:false
     }))
 
-  } catch (e) {
-
-    error.value = e.message
-
-  } finally {
-
-    loading.value = false
-
+  }catch(e){
+    error.value=e.message
+  }finally{
+    loading.value=false
   }
+
 }
 
-const correctRecords = computed(() =>
-    records.value.filter(r => !r.needsAttention)
-)
-
-const attentionRecords = computed(() =>
-    records.value.filter(r => r.needsAttention)
-)
+const correctRecords=computed(()=>records.value.filter(r=>!r.needsAttention))
+const attentionRecords=computed(()=>records.value.filter(r=>r.needsAttention))
 
 function selectAllCorrect(){
   correctRecords.value.forEach(r=>r.selected=true)
@@ -83,9 +75,7 @@ function selectAllAttention(){
 function deselectAllAttention(){
   attentionRecords.value.forEach(r=>r.selected=false)
 }
-
 </script>
-
 
 <template>
 
@@ -93,20 +83,14 @@ function deselectAllAttention(){
 
     <h1>Admin JSON Seed Fixer</h1>
 
-    <textarea
-        v-model="jsonInput"
-        class="json-input"
-    />
+    <textarea v-model="jsonInput" class="json-input"/>
 
     <button @click="fixJson" class="fix-button">
       FIX
     </button>
 
-
     <div v-if="loading">Processing with LLM...</div>
     <div v-if="error">{{error}}</div>
-
-
 
     <!-- CORRECT -->
 
@@ -128,7 +112,6 @@ function deselectAllAttention(){
         </div>
 
       </div>
-
 
       <div v-if="correctOpen">
 
@@ -155,7 +138,6 @@ function deselectAllAttention(){
             <div class="field"><b>fixedStatus</b>{{record.fixedStatus}}</div>
 
             <div class="field"><b>assignedTo</b>{{record.assignedTo}}</div>
-
             <div class="field"><b>notes</b>{{record.notes}}</div>
 
             <div class="field"><b>history</b>{{record.history}}</div>
@@ -171,8 +153,6 @@ function deselectAllAttention(){
       </div>
 
     </div>
-
-
 
     <!-- ATTENTION -->
 
@@ -194,7 +174,6 @@ function deselectAllAttention(){
         </div>
 
       </div>
-
 
       <div v-if="attentionOpen">
 
@@ -221,7 +200,6 @@ function deselectAllAttention(){
             <div class="field"><b>fixedStatus</b>{{record.fixedStatus}}</div>
 
             <div class="field"><b>assignedTo</b>{{record.assignedTo}}</div>
-
             <div class="field"><b>notes</b>{{record.notes}}</div>
 
             <div class="field"><b>history</b>{{record.history}}</div>
@@ -242,23 +220,22 @@ function deselectAllAttention(){
 
 </template>
 
-
-
 <style scoped>
 
-/* 🔧 NADPISANIE OGRANICZENIA VITE */
+/* usunięcie limitu vite */
+
 :global(#app){
-  max-width:none;
-  width:100%;
+  max-width:none !important;
+  width:100vw;
   margin:0;
   padding:0;
 }
 
-/* pełna szerokość strony */
+/* strona */
 
 .page{
 
-  width:100%;
+  width:100vw;
   padding:30px;
 
   background:#0b0b0b;
@@ -290,16 +267,15 @@ function deselectAllAttention(){
 
 }
 
-.fix-button{
+/* button */
 
+.fix-button{
   padding:10px 20px;
   cursor:pointer;
-
   margin-bottom:30px;
-
 }
 
-/* sekcje */
+/* sekcja */
 
 .section{
   margin-top:40px;
@@ -325,7 +301,6 @@ function deselectAllAttention(){
   padding-left:10px;
 }
 
-
 /* rekord */
 
 .record{
@@ -341,6 +316,12 @@ function deselectAllAttention(){
 
   border-radius:6px;
 
+  width:100%;
+
+}
+
+.record input{
+  margin-top:6px;
 }
 
 .correct{
@@ -351,16 +332,13 @@ function deselectAllAttention(){
   border:3px solid yellow;
 }
 
-
-/* 🔧 NAJWAŻNIEJSZE — SZEROKI UKŁAD PÓL */
+/* szeroki układ */
 
 .fields{
 
   display:grid;
 
-  /* dużo kolumn -> rekord szeroki */
-
-  grid-template-columns: repeat(6,1fr);
+  grid-template-columns:repeat(8,minmax(120px,1fr));
 
   gap:8px;
 
