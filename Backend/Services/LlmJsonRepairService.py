@@ -54,16 +54,19 @@ class LlmJsonRepairService:
 
         content = data["choices"][0]["message"]["content"].strip()
 
-        # -------- CLEAN RESPONSE --------
+        # -----------------------------
+        # CLEAN LLM RESPONSE
+        # -----------------------------
 
-        # remove ```json markdown
         if content.startswith("```"):
+
             parts = content.split("```")
+
             if len(parts) >= 2:
                 content = parts[1]
+
             content = content.replace("json", "").strip()
 
-        # extract JSON array
         start = content.find("[")
         end = content.rfind("]")
 
