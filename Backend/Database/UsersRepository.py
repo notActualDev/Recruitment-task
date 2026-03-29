@@ -1,4 +1,4 @@
-from Models import User
+from Models.User import User
 
 
 class UsersRepository:

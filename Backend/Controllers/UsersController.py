@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from Services.AdminTokenService import RequireAdminToken
 from Services.DependencyProvider import GetUsersRepository
 from Models.CreateUserRequest import CreateUserRequest
-from Models import User
+from Models.User import User
 from Database.UsersRepository import UsersRepository
 import bcrypt
-from Models import LoginUserRequest
-from Models import LoginUserResponse
+from Models.LoginUserRequest import LoginUserRequest
+from Models.LoginUserResponse import LoginUserResponse
 
 router = APIRouter(prefix="/Users")
 
