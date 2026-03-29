@@ -21,6 +21,11 @@ function getToken() {
   return localStorage.getItem("adminToken")
 }
 
+function normalize(v) {
+  if (v === "" || v === undefined) return null
+  return v
+}
+
 async function loadHardware() {
 
   error.value = null
@@ -55,6 +60,16 @@ async function createHardware() {
 
   try {
 
+    const body = {
+      Name: normalize(form.value.Name),
+      Brand: normalize(form.value.Brand),
+      PurchaseDate: normalize(form.value.PurchaseDate),
+      Status: form.value.Status,
+      AssignedTo: normalize(form.value.AssignedTo),
+      Notes: normalize(form.value.Notes),
+      History: normalize(form.value.History)
+    }
+
     const response = await fetch(
         `${backendUrl}/Hardware/CreateHardware`,
         {
@@ -63,11 +78,13 @@ async function createHardware() {
             "Content-Type": "application/json",
             "admin-token": getToken()
           },
-          body: JSON.stringify(form.value)
+          body: JSON.stringify(body)
         }
     )
 
     if (!response.ok) {
+      const t = await response.text()
+      console.error(t)
       throw new Error("Create failed")
     }
 
@@ -97,7 +114,7 @@ async function deleteHardware(id) {
   try {
 
     const response = await fetch(
-        `${backendUrl}/Hardware/DeleteHardware/${id}`,
+        `${backendUrl}/Hardware/DeleteHardware/${Number(id)}`,
         {
           method: "DELETE",
           headers: {
@@ -107,6 +124,8 @@ async function deleteHardware(id) {
     )
 
     if (!response.ok) {
+      const t = await response.text()
+      console.error(t)
       throw new Error("Delete failed")
     }
 
@@ -126,17 +145,17 @@ async function updateHardware(item) {
   try {
 
     const body = {
-      Name: item.Name,
-      Brand: item.Brand,
-      PurchaseDate: item.PurchaseDate,
+      Name: normalize(item.Name),
+      Brand: normalize(item.Brand),
+      PurchaseDate: normalize(item.PurchaseDate),
       Status: item.Status,
-      AssignedTo: item.AssignedTo,
-      Notes: item.Notes,
-      History: item.History
+      AssignedTo: normalize(item.AssignedTo),
+      Notes: normalize(item.Notes),
+      History: normalize(item.History)
     }
 
     const response = await fetch(
-        `${backendUrl}/Hardware/UpdateHardware/${item.Id}`,
+        `${backendUrl}/Hardware/UpdateHardware/${Number(item.Id)}`,
         {
           method: "PUT",
           headers: {
@@ -148,6 +167,8 @@ async function updateHardware(item) {
     )
 
     if (!response.ok) {
+      const t = await response.text()
+      console.error(t)
       throw new Error("Update failed")
     }
 
