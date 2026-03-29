@@ -33,14 +33,8 @@ function clearText() {
 
 <template>
   <div>
-    <h1>AddCounter: {{ counter }}</h1>
-    <button @click="addOne">+1</button>
 
     <br><br>
-
-    <router-link to="/minus">
-      Go to minus page
-    </router-link>
 
     <router-link to="/adminLoginScreen">
       Go to ADMIN LOGIN SCREEN page
@@ -55,7 +49,7 @@ function clearText() {
 
     <br>
 
-    <button @click="getText">Get</button>
+    <button @click="getText">Try connection with BACKEND</button>
     <button @click="clearText">Clear</button>
   </div>
 </template>
