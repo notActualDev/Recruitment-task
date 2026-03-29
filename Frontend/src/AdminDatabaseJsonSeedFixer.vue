@@ -9,7 +9,7 @@ const error = ref(null)
 const correctOpen = ref(true)
 const attentionOpen = ref(true)
 
-const backendJson = ref(null)
+const generatedJson = ref(null)
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL
 
@@ -108,7 +108,6 @@ async function fixJson(){
 }
 
 
-
 const correctRecords=computed(()=>records.value.filter(r=>!r.needsAttention))
 const attentionRecords=computed(()=>records.value.filter(r=>r.needsAttention))
 
@@ -130,59 +129,28 @@ function deselectAllAttention(){
 }
 
 
-
 const hasInvalidDates=computed(()=>{
   return records.value.some(r=>!isValidDate(r.acceptedPurchaseDate))
 })
 
 
-async function saveSelected(){
-
-  const token=localStorage.getItem("adminToken")
+function saveSelected(){
 
   const selected=records.value.filter(r=>r.selected)
 
-  const payload={
-    Records:selected.map(r=>({
+  const output=selected.map(r=>({
 
-      Name:r.acceptedName ?? null,
-      Brand:r.acceptedBrand ?? null,
-      PurchaseDate:r.acceptedPurchaseDate ?? null,
-      Status:r.acceptedStatus ?? null,
-      AssignedTo:r.acceptedAssignedTo ?? null,
-      Notes:r.notes ?? null,
-      History:r.history ?? null
+    Name:r.acceptedName ?? null,
+    Brand:r.acceptedBrand ?? null,
+    PurchaseDate:r.acceptedPurchaseDate ?? null,
+    Status:r.acceptedStatus ?? null,
+    AssignedTo:r.acceptedAssignedTo ?? null,
+    Notes:r.notes ?? null,
+    History:r.history ?? null
 
-    }))
-  }
+  }))
 
-  try{
-
-    const response=await fetch(`${backendUrl}/SeedAcceptedRecords`,{
-
-      method:"POST",
-
-      headers:{
-        "Content-Type":"application/json",
-        "admin-token":token
-      },
-
-      body:JSON.stringify(payload)
-
-    })
-
-    if(!response.ok){
-      throw new Error(`Backend error ${response.status}`)
-    }
-
-    const data=await response.json()
-
-    backendJson.value=JSON.stringify(data,null,2)
-
-  }
-  catch(e){
-    error.value=e.message
-  }
+  generatedJson.value=JSON.stringify(output,null,2)
 
 }
 
@@ -246,7 +214,6 @@ async function saveSelected(){
             <div class="record-warning" v-if="recordHasInvalidDate(record)">
               ⚠ Invalid date
             </div>
-
 
             <div class="fields">
 
@@ -336,7 +303,134 @@ invalid:!isValidDate(record.acceptedPurchaseDate)
 
 
 
-    <!-- SAVE -->
+    <!-- ATTENTION -->
+
+    <div v-if="attentionRecords.length" class="section">
+
+      <div class="section-header attention-border">
+
+        <h2>Records that need attention</h2>
+
+        <div>
+
+          <button @click="attentionOpen=!attentionOpen">
+            {{attentionOpen?"Collapse":"Expand"}}
+          </button>
+
+          <button @click="selectAllAttention">Select all</button>
+          <button @click="deselectAllAttention">Deselect all</button>
+
+        </div>
+
+      </div>
+
+      <div v-if="attentionOpen">
+
+        <div
+            v-for="record in attentionRecords"
+            :key="record.id"
+            class="record attention"
+        >
+
+          <div class="checkbox-col">
+            <input type="checkbox" v-model="record.selected">
+          </div>
+
+          <div class="record-body">
+
+            <div class="record-warning" v-if="recordHasInvalidDate(record)">
+              ⚠ Invalid date
+            </div>
+
+            <div class="fields">
+
+              <div class="field"><b>ID</b>{{record.id}}</div>
+              <div class="field"><b>Name</b>{{record.name}}</div>
+              <div class="field"><b>Brand</b>{{record.brand}}</div>
+              <div class="field"><b>fixedBrand</b>{{record.fixedBrand}}</div>
+              <div class="field"><b>purchaseDate</b>{{record.purchaseDate}}</div>
+              <div class="field"><b>fixedPurchaseDate</b>{{record.fixedPurchaseDate}}</div>
+              <div class="field"><b>Status</b>{{record.status}}</div>
+              <div class="field"><b>fixedStatus</b>{{record.fixedStatus}}</div>
+              <div class="field"><b>assignedTo</b>{{record.assignedTo}}</div>
+              <div class="field"><b>notes</b>{{record.notes}}</div>
+              <div class="field"><b>history</b>{{record.history}}</div>
+              <div class="field"><b>needsAttention</b>{{record.needsAttention}}</div>
+              <div class="field"><b>attentionNotes</b>{{record.attentionNotes}}</div>
+
+            </div>
+
+
+            <div class="accepted-fields">
+
+              <div class="field editable"
+                   :class="{changed:changed(record,'acceptedName')}">
+
+                <b>acceptedName</b>
+                <input v-model="record.acceptedName">
+
+              </div>
+
+
+              <div class="field editable"
+                   :class="{changed:changed(record,'acceptedBrand')}">
+
+                <b>acceptedBrand</b>
+                <input v-model="record.acceptedBrand">
+
+              </div>
+
+
+              <div class="field editable"
+                   :class="{
+changed:changed(record,'acceptedPurchaseDate'),
+invalid:!isValidDate(record.acceptedPurchaseDate)
+}">
+
+                <b>acceptedPurchaseDate</b>
+                <input v-model="record.acceptedPurchaseDate">
+
+              </div>
+
+
+              <div class="field editable"
+                   :class="{changed:changed(record,'acceptedStatus')}">
+
+                <b>acceptedStatus</b>
+
+                <select v-model="record.acceptedStatus">
+
+                  <option>Available</option>
+                  <option>In Use</option>
+                  <option>Repair</option>
+                  <option>Unknown</option>
+
+                </select>
+
+              </div>
+
+
+              <div class="field editable"
+                   :class="{changed:changed(record,'acceptedAssignedTo')}">
+
+                <b>acceptedAssignedTo</b>
+                <input v-model="record.acceptedAssignedTo">
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- SAVE BUTTON -->
 
     <div class="save-section">
 
@@ -356,13 +450,13 @@ invalid:!isValidDate(record.acceptedPurchaseDate)
 
 
 
-    <!-- BACKEND JSON -->
+    <!-- OUTPUT JSON -->
 
-    <div v-if="backendJson" class="output-section">
+    <div v-if="generatedJson" class="output-section">
 
-      <h2>JSON z backendu</h2>
+      <h2>Generated JSON</h2>
 
-      <pre>{{backendJson}}</pre>
+      <pre>{{generatedJson}}</pre>
 
     </div>
 
@@ -423,6 +517,11 @@ invalid:!isValidDate(record.acceptedPurchaseDate)
   padding-left:10px;
 }
 
+.attention-border{
+  border-left:6px solid yellow;
+  padding-left:10px;
+}
+
 .record{
   display:flex;
   gap:15px;
@@ -434,6 +533,10 @@ invalid:!isValidDate(record.acceptedPurchaseDate)
 
 .correct{
   border:3px solid #00ff88;
+}
+
+.attention{
+  border:3px solid yellow;
 }
 
 .checkbox-col{
