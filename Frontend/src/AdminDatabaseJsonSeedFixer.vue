@@ -162,7 +162,7 @@ async function saveSelected() {
   }
 
   try {
-    const response = await fetch(`${backendUrl}/SeedAcceptedRecords`, {
+    const response = await fetch(`${backendUrl}/JsonRepair/SeedAcceptedRecords`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
