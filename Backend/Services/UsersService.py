@@ -22,9 +22,10 @@ class UsersService:
         if not user:
             return None
 
+        # poprawione pole password_hash
         if not bcrypt.checkpw(
             password.encode(),
-            user.PasswordHash.encode()
+            user.password_hash.encode()
         ):
             return None
 
