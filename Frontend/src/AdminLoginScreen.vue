@@ -1,10 +1,15 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const password = ref("")
 const message = ref("")
 const router = useRouter()
+
+// usunięcie starego tokena przy wejściu na stronę
+onMounted(() => {
+  localStorage.removeItem("adminToken")
+})
 
 async function login() {
 
@@ -31,7 +36,6 @@ async function login() {
     }
 
     const data = await response.json()
-
     const token = data.Token
 
     if (token) {
@@ -50,7 +54,6 @@ async function login() {
 
 }
 </script>
-
 
 <template>
   <div>
