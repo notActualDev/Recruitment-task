@@ -42,6 +42,12 @@ function clearText() {
 
     <br><br>
 
+    <router-link to="/userLoginView">
+      Go to USER LOGIN SCREEN
+    </router-link>
+
+    <br><br>
+
     <!-- pole wyświetlania tekstu -->
     <div style="border:1px solid black; padding:10px; min-height:50px;">
       {{ text }}
