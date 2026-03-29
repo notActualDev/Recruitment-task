@@ -11,7 +11,7 @@ const userEmail = computed(() => {
 function logout() {
   localStorage.removeItem('userToken')
   localStorage.removeItem('userEmail')
-  router.push('/userLogin')
+  router.push('/userLoginView')
 }
 </script>
 
