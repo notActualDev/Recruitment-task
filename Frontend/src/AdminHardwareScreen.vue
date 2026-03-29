@@ -71,16 +71,6 @@ async function createHardware() {
       throw new Error("Create failed")
     }
 
-    form.value = {
-      Name: "",
-      Brand: "",
-      PurchaseDate: "",
-      Status: "Available",
-      AssignedTo: "",
-      Notes: "",
-      History: ""
-    }
-
     await loadHardware()
 
   } catch (e) {
@@ -125,16 +115,6 @@ async function updateHardware(item) {
 
   try {
 
-    const body = {
-      Name: item.Name,
-      Brand: item.Brand,
-      PurchaseDate: item.PurchaseDate,
-      Status: item.Status,
-      AssignedTo: item.AssignedTo,
-      Notes: item.Notes,
-      History: item.History
-    }
-
     const response = await fetch(
         `${backendUrl}/Hardware/UpdateHardware/${item.Id}`,
         {
@@ -143,7 +123,7 @@ async function updateHardware(item) {
             "Content-Type": "application/json",
             "admin-token": getToken()
           },
-          body: JSON.stringify(body)
+          body: JSON.stringify(item)
         }
     )
 
