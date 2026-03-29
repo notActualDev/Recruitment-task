@@ -1,11 +1,16 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const counter = ref(420)
 const text = ref('')
 
 // adres backendu z Vercel Environment Variables
 const backendUrl = import.meta.env.VITE_BACKEND_URL
+
+// usunięcie adminToken przy wejściu na stronę
+onMounted(() => {
+  localStorage.removeItem("adminToken")
+})
 
 function addOne() {
   counter.value++
@@ -20,11 +25,6 @@ async function getText() {
     text.value = 'Error while fetching data'
   }
 }
-
-// async function getText()
-// {
-//     text.value = backendUrl
-// }
 
 function clearText() {
   text.value = ''
@@ -51,5 +51,6 @@ function clearText() {
 
     <button @click="getText">Try connection with BACKEND</button>
     <button @click="clearText">Clear</button>
+
   </div>
 </template>
