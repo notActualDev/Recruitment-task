@@ -52,3 +52,119 @@ class HardwareRepository:
             )
 
         self.connection.commit()
+
+    # =========================
+    # DODANE METODY
+    # =========================
+
+    def GetAllHardware(self):
+
+        cursor = self.connection.cursor()
+
+        cursor.execute("SELECT * FROM Hardware")
+
+        rows = cursor.fetchall()
+
+        return rows
+
+
+    def GetHardwareById(self, hardware_id):
+
+        cursor = self.connection.cursor()
+
+        cursor.execute(
+            "SELECT * FROM Hardware WHERE id = ?",
+            (hardware_id,)
+        )
+
+        return cursor.fetchone()
+
+
+    def InsertHardware(self, hardware):
+
+        cursor = self.connection.cursor()
+
+        cursor.execute(
+            """
+            INSERT INTO Hardware
+            (Name, Brand, PurchaseDate, Status, AssignedTo, Notes, History)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                hardware.Name,
+                hardware.Brand,
+                hardware.PurchaseDate,
+                hardware.Status,
+                hardware.AssignedTo,
+                hardware.Notes,
+                hardware.History
+            )
+        )
+
+        self.connection.commit()
+
+        return cursor.lastrowid
+
+
+    def UpdateHardware(self, hardware_id, hardware):
+
+        cursor = self.connection.cursor()
+
+        cursor.execute(
+            """
+            UPDATE Hardware
+            SET
+                Name = ?,
+                Brand = ?,
+                PurchaseDate = ?,
+                Status = ?,
+                AssignedTo = ?,
+                Notes = ?,
+                History = ?
+            WHERE id = ?
+            """,
+            (
+                hardware.Name,
+                hardware.Brand,
+                hardware.PurchaseDate,
+                hardware.Status,
+                hardware.AssignedTo,
+                hardware.Notes,
+                hardware.History,
+                hardware_id
+            )
+        )
+
+        self.connection.commit()
+
+
+    def DeleteHardware(self, hardware_id):
+
+        cursor = self.connection.cursor()
+
+        cursor.execute(
+            "DELETE FROM Hardware WHERE id = ?",
+            (hardware_id,)
+        )
+
+        self.connection.commit()
+
+
+    def DeleteAllHardware(self):
+
+        cursor = self.connection.cursor()
+
+        cursor.execute("DELETE FROM Hardware")
+
+        self.connection.commit()
+
+
+    def CountHardware(self):
+
+        cursor = self.connection.cursor()
+
+        cursor.execute("SELECT COUNT(*) FROM Hardware")
+
+        result = cursor.fetchone()
+
+        return result[0]

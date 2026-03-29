@@ -11,8 +11,16 @@
 
     <br><br>
 
+    <router-link to="/adminHardwareScreen">
+      Hardware management
+    </router-link>
+
+    <br><br>
+
     <router-link to="/adminDatabaseJsonSeedFixer">
       Fix JSON
     </router-link>
+
+
   </div>
 </template>
