@@ -9,6 +9,8 @@ const error = ref(null)
 const correctOpen = ref(true)
 const attentionOpen = ref(true)
 
+const generatedJson = ref(null)
+
 const backendUrl = import.meta.env.VITE_BACKEND_URL
 
 
@@ -26,9 +28,12 @@ function isValidDate(date){
 
 }
 
-
 function changed(record,field){
   return record[field]!==record["initial"+field]
+}
+
+function recordHasInvalidDate(record){
+  return !isValidDate(record.acceptedPurchaseDate)
 }
 
 
@@ -68,13 +73,9 @@ async function fixJson(){
     records.value=data.map(r=>{
 
       const acceptedName=r.name ?? ""
-
       const acceptedBrand=r.fixedBrand ?? r.brand ?? ""
-
       const acceptedPurchaseDate=r.fixedPurchaseDate ?? r.purchaseDate ?? ""
-
       const acceptedStatus=r.fixedStatus ?? r.status ?? "Unknown"
-
       const acceptedAssignedTo=r.assignedTo ?? ""
 
       return{
@@ -106,8 +107,10 @@ async function fixJson(){
 
 }
 
+
 const correctRecords=computed(()=>records.value.filter(r=>!r.needsAttention))
 const attentionRecords=computed(()=>records.value.filter(r=>r.needsAttention))
+
 
 function selectAllCorrect(){
   correctRecords.value.forEach(r=>r.selected=true)
@@ -125,7 +128,34 @@ function deselectAllAttention(){
   attentionRecords.value.forEach(r=>r.selected=false)
 }
 
+
+const hasInvalidDates=computed(()=>{
+  return records.value.some(r=>!isValidDate(r.acceptedPurchaseDate))
+})
+
+
+function saveSelected(){
+
+  const selected=records.value.filter(r=>r.selected)
+
+  const output=selected.map(r=>({
+
+    Name:r.acceptedName ?? null,
+    Brand:r.acceptedBrand ?? null,
+    PurchaseDate:r.acceptedPurchaseDate ?? null,
+    Status:r.acceptedStatus ?? null,
+    AssignedTo:r.acceptedAssignedTo ?? null,
+    Notes:r.notes ?? null,
+    History:r.history ?? null
+
+  }))
+
+  generatedJson.value=JSON.stringify(output,null,2)
+
+}
+
 </script>
+
 
 
 <template>
@@ -136,10 +166,13 @@ function deselectAllAttention(){
 
     <textarea v-model="jsonInput" class="json-input"/>
 
-    <button @click="fixJson" class="fix-button">FIX</button>
+    <button @click="fixJson" class="fix-button">
+      FIX
+    </button>
 
     <div v-if="loading">Processing with LLM...</div>
     <div v-if="error">{{error}}</div>
+
 
 
     <!-- CORRECT -->
@@ -178,23 +211,23 @@ function deselectAllAttention(){
 
           <div class="record-body">
 
+            <div class="record-warning" v-if="recordHasInvalidDate(record)">
+              ⚠ Invalid date
+            </div>
+
             <div class="fields">
 
               <div class="field"><b>ID</b>{{record.id}}</div>
               <div class="field"><b>Name</b>{{record.name}}</div>
               <div class="field"><b>Brand</b>{{record.brand}}</div>
               <div class="field"><b>fixedBrand</b>{{record.fixedBrand}}</div>
-
               <div class="field"><b>purchaseDate</b>{{record.purchaseDate}}</div>
               <div class="field"><b>fixedPurchaseDate</b>{{record.fixedPurchaseDate}}</div>
-
               <div class="field"><b>Status</b>{{record.status}}</div>
               <div class="field"><b>fixedStatus</b>{{record.fixedStatus}}</div>
-
               <div class="field"><b>assignedTo</b>{{record.assignedTo}}</div>
               <div class="field"><b>notes</b>{{record.notes}}</div>
               <div class="field"><b>history</b>{{record.history}}</div>
-
               <div class="field"><b>needsAttention</b>{{record.needsAttention}}</div>
               <div class="field"><b>attentionNotes</b>{{record.attentionNotes}}</div>
 
@@ -305,23 +338,23 @@ invalid:!isValidDate(record.acceptedPurchaseDate)
 
           <div class="record-body">
 
+            <div class="record-warning" v-if="recordHasInvalidDate(record)">
+              ⚠ Invalid date
+            </div>
+
             <div class="fields">
 
               <div class="field"><b>ID</b>{{record.id}}</div>
               <div class="field"><b>Name</b>{{record.name}}</div>
               <div class="field"><b>Brand</b>{{record.brand}}</div>
               <div class="field"><b>fixedBrand</b>{{record.fixedBrand}}</div>
-
               <div class="field"><b>purchaseDate</b>{{record.purchaseDate}}</div>
               <div class="field"><b>fixedPurchaseDate</b>{{record.fixedPurchaseDate}}</div>
-
               <div class="field"><b>Status</b>{{record.status}}</div>
               <div class="field"><b>fixedStatus</b>{{record.fixedStatus}}</div>
-
               <div class="field"><b>assignedTo</b>{{record.assignedTo}}</div>
               <div class="field"><b>notes</b>{{record.notes}}</div>
               <div class="field"><b>history</b>{{record.history}}</div>
-
               <div class="field"><b>needsAttention</b>{{record.needsAttention}}</div>
               <div class="field"><b>attentionNotes</b>{{record.attentionNotes}}</div>
 
@@ -395,9 +428,43 @@ invalid:!isValidDate(record.acceptedPurchaseDate)
 
     </div>
 
+
+
+    <!-- SAVE BUTTON -->
+
+    <div class="save-section">
+
+      <button
+          @click="saveSelected"
+          :disabled="hasInvalidDates"
+          class="save-button"
+      >
+        SAVE SELECTED RECORDS
+      </button>
+
+      <div v-if="hasInvalidDates" class="save-warning">
+        Cannot save while invalid dates exist
+      </div>
+
+    </div>
+
+
+
+    <!-- OUTPUT JSON -->
+
+    <div v-if="generatedJson" class="output-section">
+
+      <h2>Generated JSON</h2>
+
+      <pre>{{generatedJson}}</pre>
+
+    </div>
+
+
   </div>
 
 </template>
+
 
 
 <style scoped>
@@ -415,7 +482,6 @@ invalid:!isValidDate(record.acceptedPurchaseDate)
   background:#0b0b0b;
   color:white;
   font-family:Arial;
-  box-sizing:border-box;
 }
 
 .json-input{
@@ -431,8 +497,8 @@ invalid:!isValidDate(record.acceptedPurchaseDate)
 
 .fix-button{
   padding:10px 20px;
-  cursor:pointer;
   margin-bottom:30px;
+  cursor:pointer;
 }
 
 .section{
@@ -463,8 +529,6 @@ invalid:!isValidDate(record.acceptedPurchaseDate)
   padding:15px;
   margin-top:10px;
   border-radius:6px;
-  width:100%;
-  align-items:flex-start;
 }
 
 .correct{
@@ -484,7 +548,6 @@ invalid:!isValidDate(record.acceptedPurchaseDate)
 
 .checkbox-col input{
   transform:scale(1.6);
-  cursor:pointer;
 }
 
 .record-body{
@@ -494,18 +557,21 @@ invalid:!isValidDate(record.acceptedPurchaseDate)
   gap:10px;
 }
 
+.record-warning{
+  color:#ffcc00;
+  font-size:12px;
+}
+
 .fields{
   display:grid;
   grid-template-columns:repeat(8,minmax(120px,1fr));
   gap:8px;
-  width:100%;
 }
 
 .accepted-fields{
   display:grid;
   grid-template-columns:repeat(5,minmax(160px,1fr));
   gap:8px;
-  width:100%;
 }
 
 .field{
@@ -520,7 +586,6 @@ invalid:!isValidDate(record.acceptedPurchaseDate)
 .field b{
   font-size:9px;
   color:#999;
-  margin-bottom:2px;
 }
 
 .editable{
@@ -533,19 +598,39 @@ invalid:!isValidDate(record.acceptedPurchaseDate)
   color:white;
   border:1px solid #444;
   padding:4px;
-  font-size:12px;
 }
-
-/* zmienione */
 
 .changed{
   background:#4d3f00;
 }
 
-/* bledna data */
-
 .invalid{
   background:#4d0000;
+}
+
+.save-section{
+  margin-top:40px;
+}
+
+.save-button{
+  padding:12px 20px;
+  font-size:14px;
+  cursor:pointer;
+}
+
+.save-warning{
+  color:red;
+  margin-top:10px;
+}
+
+.output-section{
+  margin-top:40px;
+}
+
+pre{
+  background:#111;
+  padding:20px;
+  overflow:auto;
 }
 
 </style>
