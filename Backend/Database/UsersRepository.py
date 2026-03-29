@@ -1,4 +1,4 @@
-from Models.User import User
+from Models import User
 
 
 class UsersRepository:
@@ -62,3 +62,19 @@ class UsersRepository:
         self.connection.commit()
 
         return cursor.lastrowid
+
+    def GetUserByEmail(self, email: str):
+
+        cursor = self.connection.cursor()
+
+        cursor.execute(
+            "SELECT * FROM Users WHERE email = ?",
+            (email,)
+        )
+
+        row = cursor.fetchone()
+
+        if not row:
+            return None
+
+        return User(**dict(row))

@@ -2,9 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from Services.AdminTokenService import RequireAdminToken
 from Services.DependencyProvider import GetUsersRepository
 from Models.CreateUserRequest import CreateUserRequest
-from Models.User import User
+from Models import User
 from Database.UsersRepository import UsersRepository
 import bcrypt
+from Models.Users import LoginUserRequest
+from Models.Users import LoginUserResponse
 
 router = APIRouter(prefix="/Users")
 
@@ -27,7 +29,7 @@ def GetUserById(
     user = repo.GetUserById(userId)
 
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Users not found")
 
     return user
 
@@ -50,3 +52,25 @@ def CreateUser(
     )
 
     return {"Id": userId}
+
+###
+
+from Services.DependencyProvider import GetUsersService
+from Services.UsersService import UsersService
+
+
+@router.post("/Login", response_model=LoginUserResponse)
+def Login(
+    request: LoginUserRequest,
+    usersService: UsersService = Depends(GetUsersService)
+):
+
+    token = usersService.Login(
+        request.Email,
+        request.Password
+    )
+
+    if not token:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+
+    return LoginUserResponse(Token=token)
