@@ -45,8 +45,20 @@ async function fixJson(){
     const data=await response.json()
 
     records.value=data.map(r=>({
+
       ...r,
-      selected:false
+      selected:false,
+
+      acceptedName:r.name ?? "",
+
+      acceptedBrand:r.fixedBrand ?? r.brand ?? "",
+
+      acceptedPurchaseDate:r.fixedPurchaseDate ?? r.purchaseDate ?? "",
+
+      acceptedStatus:r.fixedStatus ?? r.status ?? "Unknown",
+
+      acceptedAssignedTo:r.assignedTo ?? ""
+
     }))
 
   }catch(e){
@@ -77,6 +89,7 @@ function deselectAllAttention(){
 }
 </script>
 
+
 <template>
 
   <div class="page">
@@ -91,6 +104,7 @@ function deselectAllAttention(){
 
     <div v-if="loading">Processing with LLM...</div>
     <div v-if="error">{{error}}</div>
+
 
     <!-- CORRECT -->
 
@@ -125,28 +139,77 @@ function deselectAllAttention(){
             <input type="checkbox" v-model="record.selected">
           </div>
 
-          <div class="fields">
 
-            <div class="field"><b>ID</b>{{record.id}}</div>
-            <div class="field"><b>Name</b>{{record.name}}</div>
+          <div class="record-body">
 
-            <div class="field"><b>Brand</b>{{record.brand}}</div>
-            <div class="field"><b>fixedBrand</b>{{record.fixedBrand}}</div>
+            <!-- NIEEDYTOWALNE -->
 
-            <div class="field"><b>purchaseDate</b>{{record.purchaseDate}}</div>
-            <div class="field"><b>fixedPurchaseDate</b>{{record.fixedPurchaseDate}}</div>
+            <div class="fields">
 
-            <div class="field"><b>Status</b>{{record.status}}</div>
-            <div class="field"><b>fixedStatus</b>{{record.fixedStatus}}</div>
+              <div class="field"><b>ID</b>{{record.id}}</div>
+              <div class="field"><b>Name</b>{{record.name}}</div>
 
-            <div class="field"><b>assignedTo</b>{{record.assignedTo}}</div>
-            <div class="field"><b>notes</b>{{record.notes}}</div>
+              <div class="field"><b>Brand</b>{{record.brand}}</div>
+              <div class="field"><b>fixedBrand</b>{{record.fixedBrand}}</div>
 
-            <div class="field"><b>history</b>{{record.history}}</div>
+              <div class="field"><b>purchaseDate</b>{{record.purchaseDate}}</div>
+              <div class="field"><b>fixedPurchaseDate</b>{{record.fixedPurchaseDate}}</div>
 
-            <div class="field"><b>needsAttention</b>{{record.needsAttention}}</div>
+              <div class="field"><b>Status</b>{{record.status}}</div>
+              <div class="field"><b>fixedStatus</b>{{record.fixedStatus}}</div>
 
-            <div class="field"><b>attentionNotes</b>{{record.attentionNotes}}</div>
+              <div class="field"><b>assignedTo</b>{{record.assignedTo}}</div>
+
+              <div class="field"><b>notes</b>{{record.notes}}</div>
+
+              <div class="field"><b>history</b>{{record.history}}</div>
+
+              <div class="field"><b>needsAttention</b>{{record.needsAttention}}</div>
+
+              <div class="field"><b>attentionNotes</b>{{record.attentionNotes}}</div>
+
+            </div>
+
+
+            <!-- EDYTOWALNE -->
+
+            <div class="accepted-fields">
+
+              <div class="field editable">
+                <b>acceptedName</b>
+                <input v-model="record.acceptedName">
+              </div>
+
+              <div class="field editable">
+                <b>acceptedBrand</b>
+                <input v-model="record.acceptedBrand">
+              </div>
+
+              <div class="field editable">
+                <b>acceptedPurchaseDate</b>
+                <input v-model="record.acceptedPurchaseDate">
+              </div>
+
+              <div class="field editable">
+                <b>acceptedStatus</b>
+
+                <select v-model="record.acceptedStatus">
+
+                  <option>Available</option>
+                  <option>In Use</option>
+                  <option>Repair</option>
+                  <option>Unknown</option>
+
+                </select>
+
+              </div>
+
+              <div class="field editable">
+                <b>acceptedAssignedTo</b>
+                <input v-model="record.acceptedAssignedTo">
+              </div>
+
+            </div>
 
           </div>
 
@@ -155,6 +218,7 @@ function deselectAllAttention(){
       </div>
 
     </div>
+
 
     <!-- ATTENTION -->
 
@@ -189,28 +253,72 @@ function deselectAllAttention(){
             <input type="checkbox" v-model="record.selected">
           </div>
 
-          <div class="fields">
+          <div class="record-body">
 
-            <div class="field"><b>ID</b>{{record.id}}</div>
-            <div class="field"><b>Name</b>{{record.name}}</div>
+            <div class="fields">
 
-            <div class="field"><b>Brand</b>{{record.brand}}</div>
-            <div class="field"><b>fixedBrand</b>{{record.fixedBrand}}</div>
+              <div class="field"><b>ID</b>{{record.id}}</div>
+              <div class="field"><b>Name</b>{{record.name}}</div>
 
-            <div class="field"><b>purchaseDate</b>{{record.purchaseDate}}</div>
-            <div class="field"><b>fixedPurchaseDate</b>{{record.fixedPurchaseDate}}</div>
+              <div class="field"><b>Brand</b>{{record.brand}}</div>
+              <div class="field"><b>fixedBrand</b>{{record.fixedBrand}}</div>
 
-            <div class="field"><b>Status</b>{{record.status}}</div>
-            <div class="field"><b>fixedStatus</b>{{record.fixedStatus}}</div>
+              <div class="field"><b>purchaseDate</b>{{record.purchaseDate}}</div>
+              <div class="field"><b>fixedPurchaseDate</b>{{record.fixedPurchaseDate}}</div>
 
-            <div class="field"><b>assignedTo</b>{{record.assignedTo}}</div>
-            <div class="field"><b>notes</b>{{record.notes}}</div>
+              <div class="field"><b>Status</b>{{record.status}}</div>
+              <div class="field"><b>fixedStatus</b>{{record.fixedStatus}}</div>
 
-            <div class="field"><b>history</b>{{record.history}}</div>
+              <div class="field"><b>assignedTo</b>{{record.assignedTo}}</div>
 
-            <div class="field"><b>needsAttention</b>{{record.needsAttention}}</div>
+              <div class="field"><b>notes</b>{{record.notes}}</div>
 
-            <div class="field"><b>attentionNotes</b>{{record.attentionNotes}}</div>
+              <div class="field"><b>history</b>{{record.history}}</div>
+
+              <div class="field"><b>needsAttention</b>{{record.needsAttention}}</div>
+
+              <div class="field"><b>attentionNotes</b>{{record.attentionNotes}}</div>
+
+            </div>
+
+
+            <div class="accepted-fields">
+
+              <div class="field editable">
+                <b>acceptedName</b>
+                <input v-model="record.acceptedName">
+              </div>
+
+              <div class="field editable">
+                <b>acceptedBrand</b>
+                <input v-model="record.acceptedBrand">
+              </div>
+
+              <div class="field editable">
+                <b>acceptedPurchaseDate</b>
+                <input v-model="record.acceptedPurchaseDate">
+              </div>
+
+              <div class="field editable">
+                <b>acceptedStatus</b>
+
+                <select v-model="record.acceptedStatus">
+
+                  <option>Available</option>
+                  <option>In Use</option>
+                  <option>Repair</option>
+                  <option>Unknown</option>
+
+                </select>
+
+              </div>
+
+              <div class="field editable">
+                <b>acceptedAssignedTo</b>
+                <input v-model="record.acceptedAssignedTo">
+              </div>
+
+            </div>
 
           </div>
 
@@ -224,9 +332,8 @@ function deselectAllAttention(){
 
 </template>
 
-<style scoped>
 
-/* usunięcie limitu vite */
+<style scoped>
 
 :global(#app){
   max-width:none !important;
@@ -234,8 +341,6 @@ function deselectAllAttention(){
   margin:0;
   padding:0;
 }
-
-/* strona */
 
 .page{
   width:100vw;
@@ -245,8 +350,6 @@ function deselectAllAttention(){
   font-family:Arial;
   box-sizing:border-box;
 }
-
-/* textarea */
 
 .json-input{
   width:100%;
@@ -259,15 +362,11 @@ function deselectAllAttention(){
   margin-bottom:10px;
 }
 
-/* button */
-
 .fix-button{
   padding:10px 20px;
   cursor:pointer;
   margin-bottom:30px;
 }
-
-/* sekcja */
 
 .section{
   margin-top:40px;
@@ -290,8 +389,6 @@ function deselectAllAttention(){
   padding-left:10px;
 }
 
-/* rekord */
-
 .record{
   display:flex;
   gap:15px;
@@ -300,7 +397,7 @@ function deselectAllAttention(){
   margin-top:10px;
   border-radius:6px;
   width:100%;
-  align-items:center;
+  align-items:flex-start;
 }
 
 .correct{
@@ -310,8 +407,6 @@ function deselectAllAttention(){
 .attention{
   border:3px solid yellow;
 }
-
-/* checkbox kolumna */
 
 .checkbox-col{
   display:flex;
@@ -325,7 +420,12 @@ function deselectAllAttention(){
   cursor:pointer;
 }
 
-/* pola */
+.record-body{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
 
 .fields{
   display:grid;
@@ -334,7 +434,12 @@ function deselectAllAttention(){
   width:100%;
 }
 
-/* pole */
+.accepted-fields{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(160px,1fr));
+  gap:8px;
+  width:100%;
+}
 
 .field{
   background:#111;
@@ -349,6 +454,19 @@ function deselectAllAttention(){
   font-size:9px;
   color:#999;
   margin-bottom:2px;
+}
+
+.editable{
+  background:#1a1a1a;
+}
+
+.editable input,
+.editable select{
+  background:#222;
+  color:white;
+  border:1px solid #444;
+  padding:4px;
+  font-size:12px;
 }
 
 </style>
