@@ -6,6 +6,7 @@ from Controllers import JsonRepairController
 from Controllers.AdminController import router as AdminRouter
 from Controllers.UsersController import router as UsersRouter
 from Controllers.JsonRepairController import router as HardwareRouter
+from Controllers.HardwareController import router as HardwareRouterRealOne
 
 
 app = FastAPI()
@@ -24,6 +25,7 @@ app.include_router(AdminRouter)
 app.include_router(UsersRouter)
 app.include_router(JsonRepairController.router)
 app.include_router(HardwareRouter)
+app.include_router(HardwareRouterRealOne)
 
 
 @app.get("/")
