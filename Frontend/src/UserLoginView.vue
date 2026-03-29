@@ -44,7 +44,7 @@ async function login() {
     localStorage.setItem('userToken', token)
     localStorage.setItem('userEmail', email.value)
 
-    router.push('/userHome')
+    router.push('/userHomeView')
   } catch (error) {
     message.value = 'Błąd połączenia z backendem'
   } finally {
