@@ -11,6 +11,27 @@ const attentionOpen = ref(true)
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL
 
+
+function isValidDate(date){
+
+  if(!date) return true
+
+  const regex=/^\d{4}-\d{2}-\d{2}$/
+
+  if(!regex.test(date)) return false
+
+  const d=new Date(date)
+
+  return !isNaN(d)
+
+}
+
+
+function changed(record,field){
+  return record[field]!==record["initial"+field]
+}
+
+
 async function fixJson(){
 
   error.value=null
@@ -44,22 +65,38 @@ async function fixJson(){
 
     const data=await response.json()
 
-    records.value=data.map(r=>({
+    records.value=data.map(r=>{
 
-      ...r,
-      selected:false,
+      const acceptedName=r.name ?? ""
 
-      acceptedName:r.name ?? "",
+      const acceptedBrand=r.fixedBrand ?? r.brand ?? ""
 
-      acceptedBrand:r.fixedBrand ?? r.brand ?? "",
+      const acceptedPurchaseDate=r.fixedPurchaseDate ?? r.purchaseDate ?? ""
 
-      acceptedPurchaseDate:r.fixedPurchaseDate ?? r.purchaseDate ?? "",
+      const acceptedStatus=r.fixedStatus ?? r.status ?? "Unknown"
 
-      acceptedStatus:r.fixedStatus ?? r.status ?? "Unknown",
+      const acceptedAssignedTo=r.assignedTo ?? ""
 
-      acceptedAssignedTo:r.assignedTo ?? ""
+      return{
 
-    }))
+        ...r,
+        selected:false,
+
+        acceptedName,
+        acceptedBrand,
+        acceptedPurchaseDate,
+        acceptedStatus,
+        acceptedAssignedTo,
+
+        initialacceptedName:acceptedName,
+        initialacceptedBrand:acceptedBrand,
+        initialacceptedPurchaseDate:acceptedPurchaseDate,
+        initialacceptedStatus:acceptedStatus,
+        initialacceptedAssignedTo:acceptedAssignedTo
+
+      }
+
+    })
 
   }catch(e){
     error.value=e.message
@@ -87,6 +124,7 @@ function selectAllAttention(){
 function deselectAllAttention(){
   attentionRecords.value.forEach(r=>r.selected=false)
 }
+
 </script>
 
 
@@ -98,9 +136,7 @@ function deselectAllAttention(){
 
     <textarea v-model="jsonInput" class="json-input"/>
 
-    <button @click="fixJson" class="fix-button">
-      FIX
-    </button>
+    <button @click="fixJson" class="fix-button">FIX</button>
 
     <div v-if="loading">Processing with LLM...</div>
     <div v-if="error">{{error}}</div>
@@ -127,6 +163,7 @@ function deselectAllAttention(){
 
       </div>
 
+
       <div v-if="correctOpen">
 
         <div
@@ -139,16 +176,12 @@ function deselectAllAttention(){
             <input type="checkbox" v-model="record.selected">
           </div>
 
-
           <div class="record-body">
-
-            <!-- NIEEDYTOWALNE -->
 
             <div class="fields">
 
               <div class="field"><b>ID</b>{{record.id}}</div>
               <div class="field"><b>Name</b>{{record.name}}</div>
-
               <div class="field"><b>Brand</b>{{record.brand}}</div>
               <div class="field"><b>fixedBrand</b>{{record.fixedBrand}}</div>
 
@@ -159,38 +192,50 @@ function deselectAllAttention(){
               <div class="field"><b>fixedStatus</b>{{record.fixedStatus}}</div>
 
               <div class="field"><b>assignedTo</b>{{record.assignedTo}}</div>
-
               <div class="field"><b>notes</b>{{record.notes}}</div>
-
               <div class="field"><b>history</b>{{record.history}}</div>
 
               <div class="field"><b>needsAttention</b>{{record.needsAttention}}</div>
-
               <div class="field"><b>attentionNotes</b>{{record.attentionNotes}}</div>
 
             </div>
 
 
-            <!-- EDYTOWALNE -->
-
             <div class="accepted-fields">
 
-              <div class="field editable">
+              <div class="field editable"
+                   :class="{changed:changed(record,'acceptedName')}">
+
                 <b>acceptedName</b>
                 <input v-model="record.acceptedName">
+
               </div>
 
-              <div class="field editable">
+
+              <div class="field editable"
+                   :class="{changed:changed(record,'acceptedBrand')}">
+
                 <b>acceptedBrand</b>
                 <input v-model="record.acceptedBrand">
+
               </div>
 
-              <div class="field editable">
+
+              <div class="field editable"
+                   :class="{
+changed:changed(record,'acceptedPurchaseDate'),
+invalid:!isValidDate(record.acceptedPurchaseDate)
+}">
+
                 <b>acceptedPurchaseDate</b>
                 <input v-model="record.acceptedPurchaseDate">
+
               </div>
 
-              <div class="field editable">
+
+              <div class="field editable"
+                   :class="{changed:changed(record,'acceptedStatus')}">
+
                 <b>acceptedStatus</b>
 
                 <select v-model="record.acceptedStatus">
@@ -204,9 +249,13 @@ function deselectAllAttention(){
 
               </div>
 
-              <div class="field editable">
+
+              <div class="field editable"
+                   :class="{changed:changed(record,'acceptedAssignedTo')}">
+
                 <b>acceptedAssignedTo</b>
                 <input v-model="record.acceptedAssignedTo">
+
               </div>
 
             </div>
@@ -218,6 +267,7 @@ function deselectAllAttention(){
       </div>
 
     </div>
+
 
 
     <!-- ATTENTION -->
@@ -259,7 +309,6 @@ function deselectAllAttention(){
 
               <div class="field"><b>ID</b>{{record.id}}</div>
               <div class="field"><b>Name</b>{{record.name}}</div>
-
               <div class="field"><b>Brand</b>{{record.brand}}</div>
               <div class="field"><b>fixedBrand</b>{{record.fixedBrand}}</div>
 
@@ -270,13 +319,10 @@ function deselectAllAttention(){
               <div class="field"><b>fixedStatus</b>{{record.fixedStatus}}</div>
 
               <div class="field"><b>assignedTo</b>{{record.assignedTo}}</div>
-
               <div class="field"><b>notes</b>{{record.notes}}</div>
-
               <div class="field"><b>history</b>{{record.history}}</div>
 
               <div class="field"><b>needsAttention</b>{{record.needsAttention}}</div>
-
               <div class="field"><b>attentionNotes</b>{{record.attentionNotes}}</div>
 
             </div>
@@ -284,22 +330,39 @@ function deselectAllAttention(){
 
             <div class="accepted-fields">
 
-              <div class="field editable">
+              <div class="field editable"
+                   :class="{changed:changed(record,'acceptedName')}">
+
                 <b>acceptedName</b>
                 <input v-model="record.acceptedName">
+
               </div>
 
-              <div class="field editable">
+
+              <div class="field editable"
+                   :class="{changed:changed(record,'acceptedBrand')}">
+
                 <b>acceptedBrand</b>
                 <input v-model="record.acceptedBrand">
+
               </div>
 
-              <div class="field editable">
+
+              <div class="field editable"
+                   :class="{
+changed:changed(record,'acceptedPurchaseDate'),
+invalid:!isValidDate(record.acceptedPurchaseDate)
+}">
+
                 <b>acceptedPurchaseDate</b>
                 <input v-model="record.acceptedPurchaseDate">
+
               </div>
 
-              <div class="field editable">
+
+              <div class="field editable"
+                   :class="{changed:changed(record,'acceptedStatus')}">
+
                 <b>acceptedStatus</b>
 
                 <select v-model="record.acceptedStatus">
@@ -313,9 +376,13 @@ function deselectAllAttention(){
 
               </div>
 
-              <div class="field editable">
+
+              <div class="field editable"
+                   :class="{changed:changed(record,'acceptedAssignedTo')}">
+
                 <b>acceptedAssignedTo</b>
                 <input v-model="record.acceptedAssignedTo">
+
               </div>
 
             </div>
@@ -467,6 +534,18 @@ function deselectAllAttention(){
   border:1px solid #444;
   padding:4px;
   font-size:12px;
+}
+
+/* zmienione */
+
+.changed{
+  background:#4d3f00;
+}
+
+/* bledna data */
+
+.invalid{
+  background:#4d0000;
 }
 
 </style>
