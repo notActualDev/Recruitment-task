@@ -1,10 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
+
 from Services.AdminTokenService import RequireAdminToken
-from Services.DependencyProvider import GetHardwareRepository
+from Services.DependencyProvider import GetHardwareRepository, GetHardwareService
+
 from Models.CreateHardwareRequest import CreateHardwareRequest
 from Models.UpdateHardwareRequest import UpdateHardwareRequest
 from Models.Hardware import Hardware
+
 from Database.HardwareRepository import HardwareRepository
+from Services.HardwareService import HardwareService
+
 
 router = APIRouter(prefix="/Hardware")
 
@@ -77,3 +82,21 @@ def DeleteHardware(
     repo.DeleteHardware(hardwareId)
 
     return {"Success": True}
+
+
+# =========================
+# USER ENDPOINT
+# =========================
+
+@router.get("/GetAllAvailableHardwareForUserToken")
+def GetAllAvailableHardwareForUserToken(
+    service: HardwareService = Depends(GetHardwareService),
+    user_token: str = Header(None)
+):
+
+    result = service.GetAllAvailableHardwareForUserToken(user_token)
+
+    if result is None:
+        raise HTTPException(status_code=401, detail="Invalid user token")
+
+    return result

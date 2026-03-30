@@ -212,3 +212,25 @@ class HardwareRepository:
         result = cursor.fetchone()
 
         return result[0]
+
+    def GetAvailableHardware(self):
+
+        cursor = self.connection.cursor()
+
+        cursor.execute("""
+                       SELECT Name, Brand
+                       FROM Hardware
+                       WHERE Status = 'Available'
+                       """)
+
+        rows = cursor.fetchall()
+
+        result = []
+
+        for r in rows:
+            result.append({
+                "Name": r[0],
+                "Brand": r[1]
+            })
+
+        return result
