@@ -11,6 +11,7 @@ const userEmail = computed(() => {
 })
 
 const hardware = ref([])
+const assignedHardware = ref([])
 const error = ref(null)
 
 function getToken() {
@@ -43,6 +44,32 @@ async function loadHardware() {
   }
 }
 
+async function loadAssignedHardware() {
+
+  error.value = null
+
+  try {
+
+    const response = await fetch(
+        `${backendUrl}/Hardware/GetHardwareAssignedToUserToken`,
+        {
+          headers: {
+            "user-token": getToken()
+          }
+        }
+    )
+
+    if (!response.ok) {
+      throw new Error("Nie udało się pobrać przypisanego sprzętu")
+    }
+
+    assignedHardware.value = await response.json()
+
+  } catch (e) {
+    error.value = e.message
+  }
+}
+
 function logout() {
   localStorage.removeItem('userToken')
   localStorage.removeItem('userEmail')
@@ -51,6 +78,7 @@ function logout() {
 
 onMounted(() => {
   loadHardware()
+  loadAssignedHardware()
 })
 </script>
 
@@ -82,6 +110,27 @@ onMounted(() => {
         </thead>
         <tbody>
         <tr v-for="(item, index) in hardware" :key="index">
+          <td>{{ item.Name }}</td>
+          <td>{{ item.Brand }}</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <h2 style="margin-top:30px">Moje urządzenia</h2>
+
+      <div v-if="assignedHardware.length === 0">
+        Nie masz przypisanego sprzętu
+      </div>
+
+      <table v-if="assignedHardware.length > 0" class="table">
+        <thead>
+        <tr>
+          <th>Nazwa</th>
+          <th>Marka</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(item, index) in assignedHardware" :key="index">
           <td>{{ item.Name }}</td>
           <td>{{ item.Brand }}</td>
         </tr>

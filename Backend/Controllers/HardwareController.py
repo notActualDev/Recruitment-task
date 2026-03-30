@@ -100,3 +100,17 @@ def GetAllAvailableHardwareForUserToken(
         raise HTTPException(status_code=401, detail="Invalid user token")
 
     return result
+
+
+@router.get("/GetHardwareAssignedToUserToken")
+def GetHardwareAssignedToUserToken(
+    service: HardwareService = Depends(GetHardwareService),
+    user_token: str = Header(None)
+):
+
+    result = service.GetHardwareAssignedToUserToken(user_token)
+
+    if result is None:
+        raise HTTPException(status_code=401, detail="Invalid user token")
+
+    return result

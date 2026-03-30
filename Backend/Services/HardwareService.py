@@ -26,3 +26,19 @@ class HardwareService:
         hardware = self.repo.GetAvailableHardware()
 
         return hardware
+
+    def GetHardwareAssignedToUserToken(self, token: str):
+
+        if not token:
+            return None
+
+        # token → email
+        email = self.usersService.GetEmailFromToken(token)
+
+        if not email:
+            return None
+
+        # pobranie sprzętu przypisanego do usera
+        hardware = self.repo.GetHardwareAssignedToEmail(email)
+
+        return hardware
