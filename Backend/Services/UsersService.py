@@ -32,7 +32,7 @@ class UsersService:
 
         expiration = datetime.utcnow() + self.tokenLifetime
 
-        # zapisujemy email razem z tokenem
+        # zapis tokena razem z emailem
         self.activeTokens[token] = {
             "email": email,
             "expiration": expiration
@@ -57,7 +57,7 @@ class UsersService:
         return True
 
 
-    def GetEmailByToken(self, token: str):
+    def GetEmailFromToken(self, token: str):
 
         tokenData = self.activeTokens.get(token)
 
