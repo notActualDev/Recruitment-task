@@ -1,11 +1,15 @@
 <script setup>
 
-import { ref, onMounted } from "vue"
+import { ref, onMounted, computed } from "vue"
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL
 
 const hardware = ref([])
 const error = ref(null)
+
+/* -------------------------
+FORM
+------------------------- */
 
 const form = ref({
   Name: "",
@@ -17,9 +21,78 @@ const form = ref({
   History: ""
 })
 
+/* -------------------------
+SMART DASHBOARD STATE
+------------------------- */
+
+const filterText = ref("")
+const filterStatus = ref("")
+
+const sortField = ref("Name")
+const sortDirection = ref("asc")
+
+function changeSort(field) {
+
+  if (sortField.value === field) {
+    sortDirection.value = sortDirection.value === "asc" ? "desc" : "asc"
+  } else {
+    sortField.value = field
+    sortDirection.value = "asc"
+  }
+
+}
+
+/* -------------------------
+FILTER + SORT
+------------------------- */
+
+const filteredHardware = computed(() => {
+
+  let list = [...hardware.value]
+
+  if (filterText.value) {
+
+    const text = filterText.value.toLowerCase()
+
+    list = list.filter(h =>
+        (h.Name || "").toLowerCase().includes(text) ||
+        (h.Brand || "").toLowerCase().includes(text)
+    )
+
+  }
+
+  if (filterStatus.value) {
+    list = list.filter(h => h.Status === filterStatus.value)
+  }
+
+  list.sort((a,b) => {
+
+    const field = sortField.value
+
+    let A = a[field] || ""
+    let B = b[field] || ""
+
+    if (A < B) return sortDirection.value === "asc" ? -1 : 1
+    if (A > B) return sortDirection.value === "asc" ? 1 : -1
+    return 0
+
+  })
+
+  return list
+
+})
+
+/* -------------------------
+TOKEN
+------------------------- */
+
 function getToken() {
   return localStorage.getItem("adminToken")
 }
+
+/* -------------------------
+LOAD
+------------------------- */
 
 async function loadHardware() {
 
@@ -48,6 +121,10 @@ async function loadHardware() {
 
   }
 }
+
+/* -------------------------
+CREATE
+------------------------- */
 
 async function createHardware() {
 
@@ -90,6 +167,10 @@ async function createHardware() {
   }
 }
 
+/* -------------------------
+DELETE
+------------------------- */
+
 async function deleteHardware(id) {
 
   error.value = null
@@ -118,6 +199,10 @@ async function deleteHardware(id) {
 
   }
 }
+
+/* -------------------------
+UPDATE
+------------------------- */
 
 async function updateHardware(item) {
 
@@ -187,26 +272,48 @@ onMounted(loadHardware)
 
     </div>
 
+    <h2>Smart Dashboard</h2>
+
+    <div class="dashboard">
+
+      <input
+          v-model="filterText"
+          placeholder="Search Name / Brand"
+      />
+
+      <select v-model="filterStatus">
+        <option value="">All Status</option>
+        <option>Available</option>
+        <option>In Use</option>
+        <option>Repair</option>
+        <option>Unknown</option>
+      </select>
+
+    </div>
+
     <h2>Hardware List</h2>
 
     <table>
 
       <thead>
+
       <tr>
         <th>ID</th>
-        <th>Name</th>
-        <th>Brand</th>
-        <th>Status</th>
+        <th @click="changeSort('Name')">Name</th>
+        <th @click="changeSort('Brand')">Brand</th>
+        <th @click="changeSort('PurchaseDate')">PurchaseDate</th>
+        <th @click="changeSort('Status')">Status</th>
         <th>Assigned</th>
         <th>Notes</th>
         <th>History</th>
         <th>Actions</th>
       </tr>
+
       </thead>
 
       <tbody>
 
-      <tr v-for="item in hardware" :key="item.Id">
+      <tr v-for="item in filteredHardware" :key="item.Id">
 
         <td>{{ item.Id }}</td>
 
@@ -216,6 +323,10 @@ onMounted(loadHardware)
 
         <td>
           <input v-model="item.Brand" />
+        </td>
+
+        <td>
+          <input v-model="item.PurchaseDate" />
         </td>
 
         <td>
@@ -281,10 +392,21 @@ td,th{
   padding:8px;
 }
 
+th{
+  cursor:pointer;
+  background:#f4f4f4;
+}
+
 .form input,
 .form select{
   margin-right:10px;
   margin-bottom:10px;
+}
+
+.dashboard{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
 }
 
 .error{
